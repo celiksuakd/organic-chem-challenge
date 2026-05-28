@@ -387,345 +387,317 @@
 const ROOMS = [
   {
     id: 'L1', date: 'WK1', name: 'Products & Productions', questions: [
-      { type: 'mcq', prompt: 'In the chemical industry classification, BASE CHEMICALS (commodities) are characterized by:',
-        options: ['Short life cycle, controlled by market demand', 'Long life cycle, first step in producing many other chemicals; focus is on process development', 'Highly specialized, customer-tailored formulations', 'Small volumes, high margins, fast iteration'],
-        correct: 1, explain: 'Commodities = methanol, ethylene, ammonia, etc. Sold by the kt, decade-stable demand. R&D focus is on shaving cents/kg via process improvement, not on new molecules.' },
-      { type: 'mcq', prompt: 'Which classification is BEST for a custom pigment used in a specific batch of automotive paint?',
-        options: ['Base chemical (commodity)', 'Specialty chemical', 'Fine chemical', 'Pseudocommodity'],
-        correct: 1, explain: 'Specialties: short life cycle, market-driven, customer-specific. Fine chemicals = pharma intermediates, also low volume but more lab-driven.' },
-      { type: 'match', prompt: 'Match each product category to its typical example.',
+      { type: 'mcq', prompt: 'Zennaro distinguishes four branches of the chemical industry by raw-material origin. BIOREFINERY uses:',
+        options: ['Oil only', 'Biomasses (palm oil, RUCO — Repurposed Used Cooking Oil, castor oil…)', 'Coal exclusively', 'Synthetic feedstocks only'],
+        correct: 1, explain: 'Slide L1 p.1: biorefinery = biomass-based production lines. Petrochemical = oil/gas/coal. Refinery = oil. Inorganic = minerals/air/water (ammonia, H2SO4, etc.).' },
+      { type: 'mcq', prompt: 'Which product is classified as a "PSEUDOCOMMODITY" in Zennaro\'s categorization?',
+        options: ['Methanol', 'Plastic materials and fibers', 'Pharmaceutical intermediates', 'Sulfuric acid'],
+        correct: 1, explain: 'Slide L1 p.2: commodities = basic inorganic/organic chemistry products + technical gases. Pseudocommodities = plastic materials, fibers. Fine chemicals = pharma intermediates, pigments. Specialties = catalysts, varnishes, formulated products.' },
+      { type: 'match', prompt: 'Match each historical process replacement to its decade (Zennaro\'s examples of process development).',
         pairs: [
-          { left: 'Base chemical (commodity)', right: 'Methanol, ethylene, ammonia' },
-          { left: 'Specialty chemical', right: 'Custom dye for a paint batch' },
-          { left: 'Pseudocommodity', right: 'Polyethylene, polyester fibers' },
-          { left: 'Fine chemical', right: 'Pharmaceutical intermediate' }
-        ], explain: 'Volume vs value vs lifecycle defines the category. Commodity = high-vol/low-margin/stable; fine = low-vol/high-margin/short-lived.' },
-      { type: 'mcq', prompt: 'A BIOREFINERY is distinguished from a petrochemical refinery by:',
-        options: ['Use of biomass feedstocks (palm oil, used cooking oil, lignocellulosic, etc.) rather than crude oil', 'Producing only fuels', 'Operating at lower temperatures', 'Using only biological catalysts'],
-        correct: 0, explain: 'Biorefinery: oils/fats → FAME, HVO; sugars → bioethanol; lignocellulose → 2G biofuels and platform chemicals. Same value-chain logic, different carbon source.' },
-      { type: 'error', prompt: 'One of these statements is FALSE.',
+          { left: 'Carbonylation of methanol replaces acetaldehyde oxidation for acetic acid', right: '1960s' },
+          { left: 'Balanced process from ethylene replaces acetylene route for VCM', right: '1970s' },
+          { left: 'Maleic anhydride from n-butane (fluidized bed) replaces benzene oxidation (fixed bed)', right: '1980s' },
+          { left: 'L.H. Baekeland patents the first synthetic polymer (phenolic resin)', right: '1907' }
+        ], explain: 'Slide L1 p.2 highlights these three sequential process-development shifts. Each replaced a less-economical or more-hazardous route with a better one — illustrating "process development" as the dominant innovation mode for commodities.' },
+      { type: 'mcq', prompt: 'According to Zennaro, the major European chemical companies (3 in world top 10) are:',
+        options: ['BASF, Bayer, Henkel', 'BASF, INEOS, LyondellBasell', 'Solvay, Arkema, Evonik', 'Shell, BP, ENI'],
+        correct: 1, explain: 'Slide L1 p.13: Europe has lost leadership — only 3 in the global top 10. In the 90s EniChem (ENI group) was top 10 but no longer.' },
+      { type: 'error', prompt: 'Three of these are TRUE per Zennaro\'s L1, one is FALSE.',
         statements: [
-          'The Inorganic Chemical Industry covers products from minerals, air, and water (sulfuric acid, ammonia, nitric acid)',
-          'Refinery products include gasoline and diesel fuels',
-          'Petrochemical = Organic Chemical Industry, starting from oil/gas/coal',
-          'Specialty chemicals are produced in larger volumes than commodities'
-        ], wrongIndex: 3, explain: 'Backwards. Commodities = mass tonnage; specialties = small batches, high margin. Volume hierarchy: commodity > pseudocommodity > specialty > fine.' }
+          'Specialty chemicals have a SHORT life cycle and are driven by market demand',
+          'Base chemicals (commodities) have a LONG life cycle and focus on process development',
+          'MTBE moved from "fine chemical" to "commodity" — categories are not fixed',
+          'Pharmaceuticals are typically classified as commodities'
+        ], wrongIndex: 3, explain: 'Slide L1 p.2: pharmaceutical intermediates = FINE chemicals, not commodities. The hierarchy by volume: commodity > pseudocommodity > specialty > fine.' }
     ]
   },
   {
-    id: 'L2', date: 'WK2', name: 'Raw Materials', questions: [
-      { type: 'mcq', prompt: 'Natural gas described as "wet gas" contains:',
-        options: ['Liquid water at the wellhead', 'C2 and C3 paraffins in addition to methane', 'Sulfur compounds requiring sweetening', 'CO2 at >10%'],
-        correct: 1, explain: '"Dry" = essentially pure CH4. "Wet" = contains ethane, propane, sometimes butane — heavier hydrocarbons. NGL recovery splits them out for petrochemical use.' },
-      { type: 'mcq', prompt: 'The "sweetening" step in natural gas treatment refers to:',
-        options: ['Removing water (dehydration)', 'Removing H2S (and CO2) using amines', 'Adding odorant', 'Removing C2+ NGLs'],
-        correct: 1, explain: 'Sweetening = sulfur removal. Most common: amine absorption (MDEA, MEA). H2S must be reduced to <0.25 ppm before steam reforming or it will poison downstream catalysts.' },
-      { type: 'mcq', prompt: 'SYNGAS is most commonly produced industrially from:',
-        options: ['Coal gasification', 'Steam reforming of natural gas', 'Biomass pyrolysis', 'Water electrolysis'],
-        correct: 1, explain: 'CH4 + H2O ⇌ CO + 3H2 (endothermic, ~850°C, Ni catalyst). ~75% of world methanol comes via this route. Coal gasification is regionally important (China).' },
-      { type: 'match', prompt: 'Match each feedstock to its primary downstream product.',
+    id: 'L2', date: 'WK2', name: 'Raw Materials & Energy Sources', questions: [
+      { type: 'mcq', prompt: 'NGL, LPG, and LNG are defined as:',
+        options: ['Three names for the same thing', 'NGL = ethane/propane/butanes/pentanes/natural gasoline; LPG = propane+butanes; LNG = liquefied methane', 'All are crude-oil fractions', 'They differ only in transport temperature'],
+        correct: 1, explain: 'Slide L2 p.11: NGL = Natural Gas Liquid (the heavier C2+ fraction of natural gas). LPG = the C3+C4 subset. LNG = methane liquefied for transport at −162°C.' },
+      { type: 'mcq', prompt: 'In natural-gas treatment, "SWEETENING" removes:',
+        options: ['Water', 'H2S (and CO2)', 'Heavy hydrocarbons', 'Mercury'],
+        correct: 1, explain: 'Slide L2 p.18: sweetening = chemical absorption in ethanolamines or K2CO3 (low H2S) or physical absorption in high-boiling organic solvents (high H2S). Dehydration is a separate step.' },
+      { type: 'mcq', prompt: 'METHANE HYDRATES are noteworthy because:',
+        options: ['They are a refinery by-product', '1 m³ of hydrate releases ~164 m³ of natural gas; reserves may exceed all oil+gas+coal combined', 'They are easy to extract', 'They contain no H2O'],
+        correct: 1, explain: 'Slide L2 p.15: methane trapped in ice clathrates ("burning ice"). Found under Arctic permafrost and ocean floor. Industrially not yet exploited but reserves are vast.' },
+      { type: 'numeric', prompt: 'In coal gasification, the reaction C + H2O → CO + H2 has ΔH = ? kcal/mol (Zennaro slide L2)',
+        answer: 28, tolerance: 1, units: 'kcal/mol',
+        explain: 'Slide L2 p.23: ΔH = +28 kcal/mol (endothermic). Other gasification reactions: 2C+O2→2CO (−60), C+CO2⇌2CO (+38), CO+H2O⇌H2+CO2 (−10, WGS).' },
+      { type: 'match', prompt: 'Match each lignocellulose component to its characterization (per Zennaro L2).',
         pairs: [
-          { left: 'Triglycerides (oils, fats)', right: 'FAME / HVO biodiesel' },
-          { left: 'Syngas (CO + H2)', right: 'Methanol' },
-          { left: 'Naphtha', right: 'Light olefins via steam cracking' },
-          { left: 'CO2 + H2', right: 'Power-to-X fuels / methanol' }
-        ], explain: 'Feedstock + chemistry → product. Increasingly, CO2 is being treated as a feedstock rather than waste, though reactivity and energy content limit its appeal.' },
-      { type: 'mcq', prompt: 'The principal challenges of using CO2 as a chemical feedstock are:',
-        options: ['It is too rare in the atmosphere', 'Poor reactivity and low energy content (need H2 + energy input)', 'It is too expensive to purify', 'It freezes at room temperature'],
-        correct: 1, explain: 'CO2 is the lowest-energy carbon form. Any useful product requires reduction → needs H2 (ideally from renewable electrolysis) and energy input. The economics are the bottleneck.' }
+          { left: 'Cellulose (35–50%)', right: 'Linear, crystalline, dimer of glucose (cellobiose)' },
+          { left: 'Hemicellulose (15–25%)', right: 'Branched, amorphous, mixed C5/C6 sugars (xylose dominant)' },
+          { left: 'Lignin (15–30%)', right: 'Amorphous 3D aromatic polymer — chemically resistant' },
+          { left: 'HVO (2-stage)', right: 'Stage 1 at 70 bar (deoxygenation); Stage 2 at 50 bar (isomerization)' }
+        ], explain: 'Slides L2 p.29–33 and HVO process p.28. These compositions and conditions are exam-grade specifics.' }
     ]
   },
   {
-    id: 'L3', date: 'WK3', name: 'Process Schemes & Yield', questions: [
-      { type: 'mcq', prompt: 'In a chemical process: CONVERSION = ?',
-        options: ['(moles product formed)/(moles reactant fed)', '(moles reactant consumed)/(moles reactant fed)', '(moles product formed)/(moles reactant consumed)', '(moles desired product)/(moles total products)'],
-        correct: 1, explain: 'Conversion X = consumed/fed. SELECTIVITY = product/consumed. YIELD = product/fed = X × S. Get these three confused and the whole exercise unravels.' },
-      { type: 'mcq', prompt: 'SELECTIVITY toward the desired product is defined as:',
-        options: ['(moles desired product) / (moles reactant fed)', '(moles desired product) / (moles reactant consumed)', '(moles reactant consumed) / (moles fed)', '(moles total products) / (moles reactant fed)'],
-        correct: 1, explain: 'Selectivity tells you "of what reacted, how much went the way I wanted." Often the single most important number in industrial process design.' },
-      { type: 'numeric', prompt: 'A reactor: feed 100 mol A; 80 mol A consumed; 60 mol of desired product P formed. Compute the yield (P/fed) as a percentage.',
-        answer: 60, tolerance: 0.5, units: '%',
-        explain: 'Yield = (moles P formed)/(moles A fed) = 60/100 = 60%. Note: X = 80%, S = 60/80 = 75%. Yield = X·S = 0.80·0.75 = 0.60.' },
-      { type: 'mcq', prompt: 'Why use RECYCLE streams in a chemical process?',
-        options: ['To reduce capital cost only', 'To increase overall yield when single-pass conversion is low and the reactant is valuable', 'To dispose of unwanted products', 'They have no thermodynamic justification'],
-        correct: 1, explain: 'Single-pass conversion is often <50% (kinetics, equilibrium, selectivity). Recycle the unreacted reactant → overall conversion → near-100%. Tradeoff: bigger separation duty and purge to bleed inerts.' },
-      { type: 'match', prompt: 'Match each diagram type to its level of detail.',
-        pairs: [
-          { left: 'Block Flow Diagram', right: 'Major process steps as labeled blocks' },
-          { left: 'Process Flow Diagram (PFD)', right: 'Equipment with main streams, T, P, flows' },
-          { left: 'P&ID', right: 'Every line, valve, instrument, tag' },
-          { left: 'Material Balance Sheet', right: 'Stream-by-stream component flows' }
-        ], explain: 'Detail escalates: BFD → PFD → P&ID. The PFD is where the engineering judgment lives; the P&ID is the construction document.' }
+    id: 'L3', date: 'WK3', name: 'Process Schemes & Symbology', questions: [
+      { type: 'mcq', prompt: 'In increasing level of detail, Zennaro orders process diagrams as:',
+        options: ['P&ID → PFD → Block diagram', 'Block diagram → Process Flow Diagram (PFD) → P&I Diagram', 'PFD → Block → P&ID', 'They are interchangeable'],
+        correct: 1, explain: 'Slide L3 p.3–4: BFD is the simplest (boxes), PFD shows equipment + streams + main T/P/flow, P&ID adds every line, valve, instrument, tag, and control loop.' },
+      { type: 'mcq', prompt: 'In Zennaro\'s example, the production scheme of methanol from natural gas is shown at three levels (block, PFD, P&ID). The methanol PFD includes which key reactor unit?',
+        options: ['A fluidized bed cracker', 'Steam reformer + methanol synthesis converter', 'Visbreaking unit', 'Catalytic reforming unit'],
+        correct: 1, explain: 'Slide L3 p.3: methanol PFD = NG sweetening → steam reformer (Ni/ceramic) → methanol converter (Cu/ZnO/Al2O3) → crude MeOH purification.' },
+      { type: 'mcq', prompt: 'A "block diagram" is best used to:',
+        options: ['Specify every instrument tag for construction', 'Communicate the overall process logic and major streams without equipment detail', 'Calculate detailed heat exchanger areas', 'Design control loops'],
+        correct: 1, explain: 'BFD = highest-level view. Used in concept/feasibility stage. PFD adds engineering content for sizing; P&ID is the construction-and-operations document.' },
+      { type: 'mcq', prompt: 'In a P&ID, which of the following would you EXPECT to see?',
+        options: ['Mass-balance numbers only', 'Every isolation valve, control valve, instrument tag, and piping spec', 'Block-level chemistry only', 'Only major equipment'],
+        correct: 1, explain: 'P&ID = the operating bible. Includes piping classes, valve types, instrument tags (TIC, FIC, LIC, etc.), interlock symbols, vents/drains. Used during commissioning and HAZOP.' },
+      { type: 'mcq', prompt: 'The PFD shown in the methanol example primarily communicates:',
+        options: ['Pipe routing in the plot plan', 'Equipment, main streams, key T/P/composition, and the recycle structure', 'Detailed control logic only', 'Vendor part numbers'],
+        correct: 1, explain: 'PFD strikes a balance: enough engineering detail to do mass/energy balances and equipment sizing, without the line-by-line clutter of a P&ID.' }
     ]
   },
   {
     id: 'L4', date: 'WK4', name: 'Catalysis & Catalysts', questions: [
-      { type: 'mcq', prompt: 'A CATALYST is a substance that:',
-        options: ['Shifts the chemical equilibrium toward products', 'Increases the rate of reaching equilibrium without being permanently consumed', 'Lowers ΔG of reaction', 'Increases the heat of reaction'],
-        correct: 1, explain: 'Catalysts open a lower-Ea pathway — kinetics only. They do NOT shift equilibrium (Keq is a state function of T) and they emerge chemically unchanged (in principle).' },
-      { type: 'mcq', prompt: 'Compared to HOMOGENEOUS catalysis, HETEROGENEOUS catalysis offers:',
-        options: ['Easier catalyst/product separation and operation at higher T', 'Better mass transfer at all conditions', 'Higher selectivity always', 'Smaller reactor volume'],
-        correct: 0, explain: 'Het advantages: easy filtration, high-T tolerance, non-corrosive solids. Drawbacks: only surface is active, prone to poisoning, mass-transfer limitations, selectivity often worse than homog.' },
-      { type: 'match', prompt: 'Match each catalyst-deactivation mode to its cause.',
+      { type: 'mcq', prompt: 'Zennaro\'s working definition of a catalyst is:',
+        options: ['A substance consumed in the reaction', 'A substance that ENHANCES THE RATE of approach to chemical equilibrium, remains unchanged at the end of the catalytic cycle, and offers an energetically favorable alternative mechanism', 'A substance that shifts the equilibrium constant', 'A reagent regenerated stoichiometrically'],
+        correct: 1, explain: 'Slide L4 p.1. Note: a catalyst CANNOT shift equilibrium (Keq is a state function); it only accelerates the approach. Bullet #3 also rules out being permanently consumed.' },
+      { type: 'mcq', prompt: 'Comparing HOMOGENEOUS vs HETEROGENEOUS catalysis (per Zennaro\'s table):',
+        options: ['Homogeneous advantage: easy catalyst/products separation', 'Homogeneous advantage: fast transport, uniformly accessible catalyst, good selectivity; disadvantage: difficult separation, corrosive, limited to low T', 'Heterogeneous catalysts always selectivity-superior', 'Both are essentially equivalent at scale'],
+        correct: 1, explain: 'Slide L4 p.2 directly tabulates this. Het advantages: easy separation, non-corrosive, high T. Het disadvantages: surface-only access, surface poisoning, selectivity problems.' },
+      { type: 'mcq', prompt: 'ZEOLITES are made by repetition of which tetrahedra?',
+        options: ['SiO2 only', 'SiO2 and AlO2− tetrahedra, with cations (H+, Me+) balancing the charge', 'Al2O3 only', 'TiO2'],
+        correct: 1, explain: 'Slide L4 zeolites section. The framework Si:Al ratio + counter-cation determines acidity. Bridging O-H bonds give Brønsted acidity; cations like Na+, K+ moderate it.' },
+      { type: 'mcq', prompt: 'Zeolites of practical industrial interest have pore openings formed by:',
+        options: ['4 oxygen ions (2.6 Å)', '8–12 oxygen ions (~4–7.4 Å)', '20+ oxygen ions', 'No pores'],
+        correct: 1, explain: 'Slide L4: pores from 4-, 6-, 8-, 10-, 12-O rings (2.6–7.4 Å). Only 8–12 O openings have industrial interest (correct size to admit and shape-select common hydrocarbons).' },
+      { type: 'match', prompt: 'Match each deactivation mode to its mechanism (Zennaro L4).',
         pairs: [
-          { left: 'Poisoning', right: 'Strong adsorption of impurity (S, Cl) on active sites' },
-          { left: 'Coking (Fouling)', right: 'Carbonaceous deposits blocking pores and sites' },
-          { left: 'Sintering', right: 'Crystallite growth → loss of surface area at high T' },
-          { left: 'Mechanical degradation', right: 'Attrition or abrasion of catalyst particles' }
-        ], explain: 'Four classic deactivation modes (Bartholomew). Coking can often be regenerated (burn it off); sintering is usually irreversible.' },
-      { type: 'mcq', prompt: 'ZEOLITES owe their industrial importance largely to:',
-        options: ['Catalytic activity in liquid phase only', 'Crystalline microporous structure with size-selective channels and Brønsted acid sites', 'Their low cost', 'Tolerance of all poisons'],
-        correct: 1, explain: 'Shape selectivity (reactant, product, transition-state) + tunable acidity + thermal stability = the foundation of FCC, alkylation, isomerization, and modern EB processes.' },
-      { type: 'error', prompt: 'One statement is FALSE.',
-        statements: [
-          'Coking is more easily regenerated than sintering',
-          'Sintering is essentially irreversible at industrial scale',
-          'Catalyst poisons (S, Cl) bind irreversibly to active sites in many systems',
-          'A catalyst shifts the equilibrium constant Keq toward the products'
-        ], wrongIndex: 3, explain: 'Equilibrium is governed by ΔG°, which depends ONLY on T and pressure (for gases). Catalysts cannot violate thermodynamics — they only speed up the approach.' }
+          { left: 'Poisoning', right: 'Strong adsorption of impurity on active sites (e.g., S on Cu)' },
+          { left: 'Coking (fouling)', right: 'Physical deposition of carbonaceous species on the surface' },
+          { left: 'Sintering', right: 'Crystallite growth → loss of surface area, high-T solid-state' },
+          { left: 'Masking', right: 'Physical coverage by non-volatile substances (Ni/V in HDS, Si/P on catalytic converters)' }
+        ], explain: 'Slide L4 deactivation section. Coking can be regenerated (air/steam/H2 burn). Sintering and severe poisoning are usually irreversible.' }
     ]
   },
   {
     id: 'L5', date: 'WK5', name: 'Methanol Synthesis', questions: [
-      { type: 'mcq', prompt: 'The main methanol synthesis reaction CO + 2H2 ⇌ CH3OH is:',
-        options: ['Endothermic and proceeds with mole increase', 'Exothermic (ΔH° ≈ −90.8 kJ/mol) and proceeds with mole decrease', 'Thermoneutral', 'Slightly endothermic, mole-neutral'],
-        correct: 1, explain: 'Strongly exothermic, 3 moles → 1 mole. Le Châtelier: favored by low T and high P. The whole reactor design (multistage adiabatic, multitubular) is built around that constraint.' },
-      { type: 'mcq', prompt: 'The modern (ICI-type) methanol catalyst is:',
-        options: ['Fe-K2O', 'Cu/ZnO/Al2O3 (CZA)', 'Pt/Al2O3', 'V2O5/TiO2'],
-        correct: 1, explain: 'Copper on zinc oxide on alumina, low-pressure process (200-250°C, 50-100 bar). Replaced the harsh BASF ZnO/Cr2O3 (300-400 bar, 400°C) catalyst.' },
-      { type: 'numeric', prompt: 'For the main reaction CO + 2H2 → CH3OH, the stoichiometric H2/CO ratio in the feed should be approximately:',
-        answer: 2, tolerance: 0.1, units: ': 1',
-        explain: 'Stoichiometry demands H2:CO = 2:1. In practice, slight excess H2 is used to drive equilibrium. The CO2 + 3H2 side reaction shifts the ideal stoichiometric number ((H2 − CO2)/(CO + CO2)) ≈ 2.' },
-      { type: 'mcq', prompt: 'Why is methanol synthesis run at HIGH pressure and LOW temperature?',
-        options: ['Le Châtelier: exothermic + mole-decreasing → P↑ and T↓ both shift equilibrium toward products', 'High P/low T helps coke removal', 'Required by safety codes', 'To lower H2 cost'],
-        correct: 0, explain: 'Exothermic → cooler is better thermodynamically. Mole-decreasing → higher P is better. Lower-bound on T comes from kinetics (need the Cu catalyst to actually work, ~200°C).' },
-      { type: 'match', prompt: 'Match each operating choice in a methanol plant to its purpose.',
+      { type: 'mcq', prompt: 'The MAIN methanol synthesis reaction CO + 2H2 ⇌ CH3OH has ΔH°(298) = ? (Zennaro slide values)',
+        options: ['+90.8 kJ/mol (endothermic)', '−90.8 kJ/mol (exothermic, mole-decreasing)', '−25 kJ/mol', '+41 kJ/mol'],
+        correct: 1, explain: 'Slide L5 p.4: ΔH°=−90.8 kJ/mol, ΔG°=−25 kJ/mol. Le Châtelier: favor with low T and high P. Side reaction CO2+H2⇌CO+H2O is the reverse WGS (ΔH=+41 kJ/mol).' },
+      { type: 'mcq', prompt: 'The MODERN industrial methanol catalyst (ICI low-pressure process, 1966–72) is:',
+        options: ['ZnO-Cr2O3 (BASF original)', 'Cu/ZnO/Al2O3 (CZA) or Cu/ZnO/Cr2O3', 'Pt/Al2O3', 'Fe2O3-K2CO3'],
+        correct: 1, explain: 'Slide L5 catalysts page. CZA active at 200–250°C, P=150–200 atm. The historical BASF process (1923) used ZnO-Cr2O3 (70/30 Zn/Cr) at 400°C, 300–400 atm. CZA life: 2–8 years.' },
+      { type: 'numeric', prompt: 'For the main reaction, ΔG°R = 0 at what temperature (°C)? (Zennaro\'s thermodynamic analysis)',
+        answer: 135, tolerance: 5, units: '°C',
+        explain: 'Slide L5 p.7: ΔG°R = 0 at T = 135°C for CO + 2H2 ⇌ CH3OH. Above 135°C, Keq < 1 → methanol is NOT the favored product → need a selective catalyst. Equilibrium yield at 300°C, 250 bar ≈ 60%.' },
+      { type: 'mcq', prompt: 'In a methanol plant, natural gas is desulfurized to what level before steam reforming?',
+        options: ['< 100 ppm H2S', '< 10 ppm H2S', '< 0.25 ppm H2S', 'No desulfurization needed'],
+        correct: 2, explain: 'Slide L5 production page: feed must be < 0.25 ppm H2S to protect the Ni steam-reforming catalyst AND the downstream Cu methanol catalyst. CZA is poisoned by S (and Cl) — primary deactivation mechanism alongside Cu sintering.' },
+      { type: 'match', prompt: 'Match each operating choice in a methanol plant to its purpose (Zennaro L5).',
         pairs: [
-          { left: 'Desulfurization to <0.25 ppm H2S', right: 'Protect Ni reformer and Cu methanol catalysts' },
-          { left: 'Multistage adiabatic with intercooling', right: 'Approximate optimal decreasing-T profile for exothermic equilibrium' },
-          { left: 'Recycle unreacted syngas', right: 'Overcome single-pass conversion limits' },
-          { left: 'Purge stream', right: 'Bleed inerts (N2, CH4) to prevent accumulation' }
-        ], explain: 'Every methanol plant has these four ingredients. Removing any one destroys the economics.' }
+          { left: 'Multistage adiabatic with intercooling (ICI)', right: 'Approximate the optimum decreasing-T profile' },
+          { left: 'Multitubular cooled reactor (Lurgi)', right: 'Direct cooling with boiling water for high heat duty' },
+          { left: 'CO2 in feed', right: 'Beneficial role (with overstoichiometric H2/COx)' },
+          { left: 'S.S. tubes Cu-coated', right: 'Prevent formation of Fe(CO)5' }
+        ], explain: 'Each is a specific engineering choice in commercial MeOH plants. CO conv > 90%, MeOH selectivity 97–98%, capacity up to 1.5×10⁶ MT/y, steam consumption 0.8–1.2 ton/ton MeOH.' }
     ]
   },
   {
-    id: 'L6', date: 'WK6', name: 'Refinery & Hydrotreating', questions: [
-      { type: 'mcq', prompt: 'HYDROTREATING (HDS) of fuels primarily aims to:',
-        options: ['Crack heavy hydrocarbons to lighter ones', 'Saturate olefins for fuel stability', 'Remove sulfur as H2S using H2 over a CoMo/NiMo catalyst', 'Increase the octane number'],
-        correct: 2, explain: 'HDS: R-S + H2 → R-H + H2S. CoMo/NiMo on Al2O3, 320-400°C, 20-100 bar H2. Also removes N (HDN), metals, and saturates some olefins/aromatics.' },
-      { type: 'mcq', prompt: 'The main hydrogen source for refinery hydrotreating units is typically:',
-        options: ['Electrolysis of water', 'Steam methane reforming (SMR), often supplemented by catalytic reforming H2', 'Coal gasification only', 'Recovered from the atmosphere'],
-        correct: 1, explain: 'Most refinery H2 comes from SMR + naphtha catalytic reforming (which co-produces H2 while making BTX/gasoline). H2 economics are central to deep desulfurization.' },
-      { type: 'mcq', prompt: 'BREF (BAT Reference Document) is:',
-        options: ['A European regulation document defining Best Available Techniques for industrial sectors', 'A safety standard for vessel design', 'A catalyst trade name', 'An ISO accounting standard'],
-        correct: 0, explain: 'BREF = Best Available Techniques Reference. EU IED implementation — sector-specific (refining, LVOC, etc.) BAT-AELs define environmental performance targets.' },
-      { type: 'mcq', prompt: 'CATALYTIC REFORMING in a refinery is used to:',
-        options: ['Crack vacuum gasoil', 'Convert naphtha into aromatics and isoparaffins (high-octane gasoline + BTX + H2)', 'Hydrotreat diesel', 'Produce methanol'],
-        correct: 1, explain: 'Pt/Re or Pt/Sn on chlorided alumina. Dehydrogenation, isomerization, dehydrocyclization. Output: high-octane reformate + BTX feedstock + bonus H2 for hydrotreating.' },
-      { type: 'error', prompt: 'One is FALSE.',
-        statements: [
-          'HDS reduces SOx emissions when the fuel is burned downstream',
-          'CoMo/NiMo HDS catalysts are sulfided (active form contains MoS2)',
-          'Increasing pressure tends to enhance HDS activity',
-          'Hydrotreating is endothermic so reactors must be heated continuously'
-        ], wrongIndex: 3, explain: 'HDS reactions are EXOTHERMIC (hydrogen addition + bond breaking with C-H/S-H formation). Quench streams between catalyst beds manage the temperature rise.' }
+    id: 'L6', date: 'WK6', name: 'Refinery Processes', questions: [
+      { type: 'mcq', prompt: 'HYDROTREATING in a refinery (Zennaro L6) covers HDS, HDN, HDO, HDM. The main HDS catalyst families are:',
+        options: ['Pt/Al2O3', 'Co-Mo (lower-severity) and Ni-Mo (higher-severity, also HDN)', 'V2O5/TiO2', 'Cu/ZnO/Al2O3'],
+        correct: 1, explain: 'Slide L6 catalyst table: Co-Mo for HT naphtha/kerosene/gasoils (0.5–4 MPa H2), Ni-Mo for HDS-HDN of harder feeds (2–3 MPa). Active phase: supported sulphides (CoMoS) at low T, oxides (FeCrO) at high T.' },
+      { type: 'mcq', prompt: 'A TRICKLE BED reactor in a refinery hydrotreater operates with:',
+        options: ['Continuous liquid + dispersed gas bubbles', 'Continuous GAS phase + a liquid film flowing on the catalyst (laminar)', 'Solid catalyst suspended in flowing liquid', 'Pure gas/solid'],
+        correct: 1, explain: 'Slide L6: trickle flow = continuous gas with liquid film. Bubble flow = continuous liquid. Pulse = oscillation. Spray = continuous gas with droplets. Choice depends on feed and superficial velocities.' },
+      { type: 'mcq', prompt: 'In thermal cracking, the reactivity order for H abstraction is:',
+        options: ['Primary > secondary > tertiary', 'Tertiary > secondary > primary, in ratio 10:2:1', 'Random', 'Only primary H reacts'],
+        correct: 1, explain: 'Slide L6: H reactivity 10:2:1 for 3°:2°:1°, controlled by radical stability. This is why branched paraffins crack faster than linear ones, and why isomerization is a focus in reforming.' },
+      { type: 'mcq', prompt: 'CATALYTIC REFORMING aims to (per Zennaro L6):',
+        options: ['Crack heavy residues', 'Convert heavy naphtha to higher-octane gasoline + aromatics (BTX) + H2', 'Hydrotreat diesel', 'Produce methanol'],
+        correct: 1, explain: 'Slide L6 reforming. Catalyst: Pt-Re or Pt-Sn on chlorided γ-Al2O3 (0.3–0.7% Pt, 0.8–1.1% Cl). Typical yield: 74% reformate, 17% LPG, 8% gas, 1% H2 by weight.' },
+      { type: 'numeric', prompt: 'A Pt/Al2O3 reforming catalyst tolerates up to what level of sulfur in the feed? (ppm)',
+        answer: 30, tolerance: 25, units: 'ppm',
+        explain: 'Slide L6 catalyst poisoning table: Pt/Al2O3 = 10–50 ppm; Pt-Re (Pt/Re=1) = 1–3 ppm; Pt-Re (Pt/Re>1) = 0.1 ppm. Bi-metallic catalysts are MUCH more S-sensitive. Hydrotreating the naphtha BEFORE reforming is mandatory.' }
     ]
   },
   {
-    id: 'L7', date: 'WK7', name: 'Steam Cracking', questions: [
-      { type: 'mcq', prompt: 'The main industrial purpose of STEAM CRACKING is to produce:',
-        options: ['Aromatics (BTX)', 'Light olefins, primarily ethylene and propylene', 'Synthesis gas', 'Methanol'],
-        correct: 1, explain: 'Steam cracking is THE source of ethylene (>200 Mt/y world). Co-products: propylene, C4s, pyrolysis gasoline (aromatics), H2. Feeds: ethane (US shale) to naphtha (Europe).' },
-      { type: 'mcq', prompt: 'STEAM is added to the cracker feed primarily to:',
-        options: ['Heat the hydrocarbons by condensation', 'Reduce the hydrocarbon partial pressure (favors olefins) and reduce coking', 'Increase residence time', 'Convert paraffins to alcohols'],
-        correct: 1, explain: 'Lower partial pressure shifts cracking equilibria toward olefins. Steam also dilutes coke precursors and partially gasifies coke (C + H2O → CO + H2). NO catalyst — purely thermal.' },
-      { type: 'mcq', prompt: 'Steam cracking is performed at:',
-        options: ['Low temperature, long residence time', 'Very high temperature (800-900°C), millisecond-range residence time, fast quench', 'Moderate T with a Ni catalyst', 'Low P, room temperature'],
-        correct: 1, explain: 'Short contact (~0.1-0.5 s) at >800°C + immediate quench (transfer-line exchangers) freezes the kinetic distribution before secondary reactions destroy the olefins.' },
-      { type: 'numeric', prompt: 'Ethane cracker single-pass ethane conversion is typically around what %? (give a representative figure)',
-        answer: 65, tolerance: 10, units: '%',
-        explain: 'Ethane cracker conversions are typically 55-70% per pass; selectivity to ethylene is ~80%. Unreacted ethane is recovered and recycled to extinction.' },
-      { type: 'error', prompt: 'One statement is FALSE.',
-        statements: [
-          'Steam cracking is non-catalytic and thermal',
-          'Lighter feeds (ethane) give higher ethylene selectivity than naphtha',
-          'A transfer-line exchanger quenches the product gas rapidly to preserve olefins',
-          'Steam cracking is exothermic and requires no fired heater'
-        ], wrongIndex: 3, explain: 'Strongly ENDOTHERMIC. The radiant section of the furnace supplies heat through tubes; convection section preheats feed/steam. Energy intensity is the defining cost.' }
+    id: 'L7', date: 'WK7', name: 'Steam Cracking (Lower Olefins)', questions: [
+      { type: 'mcq', prompt: 'Steam cracking is performed under what conditions (Zennaro L7)?',
+        options: ['T = 300°C, P = 50 bar, τ > 1 min', 'T = 700–800°C, P = 1.5–2.5 bar, contact time 100–400 ms', 'T = 200°C, atmospheric P', 'T = 1200°C, P = 100 bar'],
+        correct: 1, explain: 'Slide L7. The combination of high T, low P, very short residence time + fast quench (TLE = Transfer Line Exchanger) is what preserves olefins from decomposition to C + H2 (always thermodynamically favored).' },
+      { type: 'mcq', prompt: 'STEAM is added to the cracker feed. Its FOUR purposes (per Zennaro) are:',
+        options: ['Cool the products only', 'Lower HC partial pressure → favor olefins; reduce coke (gasification: C+H2O→CO/CO2/H2); provide reaction heat; allow sub-atmospheric P_HC', 'Catalyze the reaction', 'Increase residence time'],
+        correct: 1, explain: 'Slide L7 reactor design: steam dilution lowers olefin partial pressure (helps thermodynamics), reduces coke (gasifies it), supplies heat, and allows operation above 1 atm while keeping HC partial pressure low.' },
+      { type: 'mcq', prompt: 'Why is ~20 ppm of dimethyl sulfide ADDED to sulfur-free steam cracker feeds?',
+        options: ['To increase the heating value', 'To passivate Ni sites in the cracker coils (Ni catalyzes coke formation; nickel sulfide does not)', 'To make smell detectable', 'For corrosion control'],
+        correct: 1, explain: 'Slide L7: in sulfur-free feeds, CO in cracked gas can rise up to 1% (from C reacting with H2O on bare Ni). Adding ~20 ppm S forms passive nickel sulfides → CO drops back to ~100 ppm normal.' },
+      { type: 'mcq', prompt: 'In a steam cracker product train, the C2 SPLITTER separates ethylene from ethane. Top temperature and pressure?',
+        options: ['25°C, 1 bar', '−40°C and 15 bar, with propylene as coolant; ~160 trays', '−100°C and 50 bar', '0°C and 30 bar'],
+        correct: 1, explain: 'Slide L7 C2 splitter: ΔTb (C2H4 −103.8°C vs C2H6 −88.6°C) is 15°C → 160 trays needed to get 99.9% ethylene with <10 ppm acetylene (for Ziegler-Natta polymerization).' },
+      { type: 'numeric', prompt: 'Specific energy consumption of a steam cracker is typically about how many kcal per kg of ethylene produced? (Zennaro L7)',
+        answer: 7, tolerance: 2, units: 'kcal/kg ethylene',
+        explain: 'Slide L7 operating conditions: 6–8 kcal/kg ethylene. This is the single biggest energy cost in a petrochemical complex — driving constant R&D on furnace efficiency, advanced TLEs, and electrified crackers.' }
     ]
   },
   {
-    id: 'L8', date: 'WK8', name: 'Aromatics Separation (BTX)', questions: [
-      { type: 'mcq', prompt: 'BTX stands for:',
-        options: ['Benzene, Toluene, Xylene', 'Butadiene, Toluene, p-Xylene', 'Benzene, Toluene, p-Xylene only', 'Butane, Toluene, Xylene'],
-        correct: 0, explain: 'BTX = benzene + toluene + (mixed) xylenes (o-, m-, p-). The classic aromatic platform from catalytic reforming or pygas (steam cracker by-product).' },
-      { type: 'mcq', prompt: 'Why is EXTRACTIVE DISTILLATION often used to separate aromatics from non-aromatic paraffins of similar boiling point?',
-        options: ['It is cheaper than a normal column', 'A polar solvent (sulfolane, NMP) modifies relative volatility, breaking the close-boiling tie', 'It requires lower temperature', 'It exploits density differences only'],
-        correct: 1, explain: 'C6 paraffins and benzene boil within a few degrees — ordinary distillation fails. The solvent (sulfolane is the classic) preferentially associates with aromatics, making them less volatile so paraffins go overhead.' },
-      { type: 'mcq', prompt: 'Para-xylene is most commonly separated from its isomers (m-, o-, ethylbenzene) by:',
-        options: ['Ordinary distillation', 'Adsorption (e.g., UOP Parex on zeolite) or crystallization', 'Steam cracking', 'Catalytic reforming'],
-        correct: 1, explain: 'p-X, m-X, o-X have boiling points within <5°C — distillation is uneconomic. Parex: simulated moving bed adsorption on zeolite. Crystallization: exploits the higher freezing point of p-xylene.' },
-      { type: 'match', prompt: 'Match each aromatics separation to its typical method.',
+    id: 'L8', date: 'WK8', name: 'Aromatics from Pygas', questions: [
+      { type: 'mcq', prompt: 'PYGAS (pyrolysis gasoline) from a steam cracker is best described as:',
+        options: ['A by-product of catalytic reforming', 'A C5–C12 naphtha-range cut, RICH in aromatics — feedstock for BTX extraction', 'A heavy residue', 'A C2–C4 olefin mix'],
+        correct: 1, explain: 'Slide L8 p.2: pygas = high-aromatics naphtha (also contains olefins/paraffins). After hydrofining (diolefins → olefins → paraffins, 2-stage), the aromatics are extracted from paraffins by solvent (DEG or sulfolane).' },
+      { type: 'mcq', prompt: 'EXTRACTIVE distillation is needed for BTX/aliphatics separation because:',
+        options: ['Aromatics are too volatile', 'Aromatics and paraffins have nearly identical boiling points — a polar solvent (DEG, sulfolane) modifies relative volatility by exploiting aromatics\' polarizability', 'Aromatics are not separable at all', 'Adsorption is too expensive'],
+        correct: 1, explain: 'Slide L8 extraction page: ordinary distillation cannot separate benzene from C6 paraffins (BPs within ~1–2°C). A polar third component shifts relative volatility ≫ 1, enabling extractive separation.' },
+      { type: 'mcq', prompt: 'XYLENE isomer separation is achieved primarily by:',
+        options: ['Simple distillation', 'Fractional crystallization (Phillips) OR fractional adsorption on zeolite (Parex/UOP, simulated moving bed)', 'Reactive distillation', 'Magnetic separation'],
+        correct: 1, explain: 'Slide L8 xylene table: o-X 144.4°C, m-X 139.1°C, p-X 138.3°C, EB 136.2°C — almost impossible by distillation (~800 trays to split p-X / m-X). p-X freezes at 13.3°C (much higher than the others) → crystallization works; SMB adsorption is the modern UOP Parex route.' },
+      { type: 'match', prompt: 'Match each aromatic to its principal industrial OUTLET.',
         pairs: [
-          { left: 'Aromatics vs paraffins (similar BP)', right: 'Extractive distillation (sulfolane)' },
-          { left: 'Benzene from toluene', right: 'Ordinary distillation' },
-          { left: 'p-Xylene from m/o-xylene', right: 'Adsorption or crystallization' },
-          { left: 'Toluene to benzene', right: 'Hydrodealkylation or transalkylation' }
-        ], explain: 'Pick the separation based on what the BPs (and freezing points) allow. Distillation first, then exotic methods only where physics forces you.' },
-      { type: 'mcq', prompt: 'TRANSALKYLATION is used to:',
-        options: ['Crack aromatics to olefins', 'Redistribute alkyl groups (e.g., toluene + heavy aromatics ⇌ benzene + xylenes)', 'Hydrogenate aromatics', 'Remove sulfur'],
-        correct: 1, explain: 'Equilibrium reaction over zeolite. Used to upgrade low-value toluene + C9+ aromatics into more valuable benzene + xylenes, matching demand to BTX cut.' }
+          { left: 'Benzene', right: 'Styrene, phenol, maleic anhydride, detergents' },
+          { left: 'Toluene', right: 'Polyurethanes, benzoic acid' },
+          { left: 'p-Xylene', right: 'Terephthalic acid → polyesters' },
+          { left: 'o-Xylene', right: 'Phthalic anhydride → plasticizers' }
+        ], explain: 'Slide L8 p.3 table. These outlets drive global BTX demand and dictate xylene-isomer separation economics.' },
+      { type: 'mcq', prompt: 'TOLUENE DEALKYLATION is performed at:',
+        options: ['Room temperature', '660–680°C and 37–39 atm in a QUENCH reactor (fresh H2 injected at 9 different heights)', 'Cryogenic conditions', 'At atmospheric pressure with no H2'],
+        correct: 1, explain: 'Slide L8 dealkylation section. ΔH°R(298K) = −4.81 kJ/mol. Used to convert excess toluene into benzene when benzene demand exceeds the extraction yield.' }
     ]
   },
   {
-    id: 'L9', date: 'WK9', name: 'Acetic Acid (Carbonylation)', questions: [
-      { type: 'mcq', prompt: 'Modern acetic acid production proceeds primarily via:',
-        options: ['Fermentation of ethanol', 'Catalytic oxidation of acetaldehyde', 'Carbonylation of methanol: CH3OH + CO → CH3COOH', 'Hydration of acetylene'],
-        correct: 2, explain: '~70% of global acetic acid from MeOH + CO. The Monsanto (Rh, 1970) and Cativa (Ir, BP 1996) processes dominate. Both use methyl iodide as a promoter.' },
-      { type: 'mcq', prompt: 'The Cativa (BP) and Monsanto processes for acetic acid differ primarily in:',
-        options: ['Feedstock (CO source)', 'Active metal — Cativa uses Ir, Monsanto used Rh', 'Pressure level', 'Use of solvent'],
-        correct: 1, explain: 'Cativa: Ir-based, faster, higher selectivity at lower water levels — economic improvement. Both share the methyl iodide promoter and similar reaction mechanism.' },
-      { type: 'mcq', prompt: 'The role of methyl iodide (CH3I) in methanol carbonylation is to:',
-        options: ['Solubilize the catalyst', 'Convert MeOH into a more reactive methyl-source via in-situ formation of CH3-M intermediates', 'Provide hydrogen', 'Inhibit the reaction'],
-        correct: 1, explain: 'Iodide promoter cycle: MeOH + HI → CH3I + H2O. Then CH3I oxidatively adds to the Rh/Ir center, accelerating the rate-limiting methyl-migration step.' },
-      { type: 'mcq', prompt: 'Carbon monoxide for the acetic acid process is most commonly sourced from:',
-        options: ['Atmospheric CO', 'Syngas (from steam reforming or partial oxidation), separated from H2', 'CO2 reduction', 'Coal combustion'],
-        correct: 1, explain: 'Plants typically integrate with a syngas unit. CO is purified (cryogenic or PSA) to high purity since sulfur and H2 are catalyst poisons in low concentrations.' },
-      { type: 'error', prompt: 'One is FALSE.',
-        statements: [
-          'Carbonylation reactions are atom-economical (all carbon from methanol + CO goes into product)',
-          'Cativa allows operation at lower water concentration than Monsanto',
-          'Water is needed mechanistically but excess water decreases productivity',
-          'Acetic acid is produced today mostly by aerobic fermentation of ethanol'
-        ], wrongIndex: 3, explain: 'Fermentation (vinegar route) accounts for only ~10% of acetic acid, mostly food-grade. The bulk is synthetic via carbonylation.' }
+    id: 'L9', date: 'WK9', name: 'Acetic Acid (CH3OH Carbonylation)', questions: [
+      { type: 'mcq', prompt: 'Place these acetic-acid technologies in chronological order (Zennaro L9 timeline):',
+        options: ['Fermentation → acetaldehyde oxidation → Co-carbonylation (BASF, 1960) → Rh-carbonylation (Monsanto, 1966) → Ir-carbonylation (Cativa, 1997)', 'Cativa → Monsanto → BASF → fermentation', 'Naphtha oxidation → BASF → Cativa → Monsanto', 'Random order'],
+        correct: 0, explain: 'Slide L9 history. Methanol carbonylation was INVENTED by Reppe (1941) but first commercialized by BASF (Co-catalyst, 1960). Monsanto Rh (1966) was the breakthrough on mildness/selectivity. Cativa Ir (BP, 1997) lowered water requirement and boosted productivity.' },
+      { type: 'mcq', prompt: 'In the Monsanto (Rh) acetic acid process, the rate-determining step is:',
+        options: ['Methanol activation', 'OXIDATIVE ADDITION of CH3I to [Rh(CO)2I2]−: r = k[CH3I][Rh]', 'Methyl migration', 'Reductive elimination'],
+        correct: 1, explain: 'Slide L9 Monsanto kinetics. First order in CH3I and Rh, ZERO order in MeOH, CO (above 8 atm), and acetic acid. Why? Because [Rh] and [CH3I] limit OA, which precedes any of the methanol-dependent steps.' },
+      { type: 'mcq', prompt: 'Operating conditions of the Monsanto process:',
+        options: ['T = 400°C, P = 1 atm', 'T = 185°C, P = 25–35 atm CO, [Rh] = 10⁻³ M', 'T = 600°C, P = 700 bar', 'T = 25°C, P = 1 atm'],
+        correct: 1, explain: 'Slide L9. Selectivity 99.6% (vs BASF Co: 90% selectivity at 300–700 bar, 220–250°C). Monsanto produces 70% of world acetic acid.' },
+      { type: 'mcq', prompt: 'The CATIVA (Ir/BP) process improvements vs Monsanto are due to (Zennaro L9):',
+        options: ['Higher pressure operation', 'CH3I addition on Ir is 120–150× faster than on Rh; allows operation with low water (< 8%); stable at low PCO', 'No iodide promoter needed', 'Acetic acid is the solvent'],
+        correct: 1, explain: 'Slide L9 Cativa. Rate expression flips: r = k[Ir][CO]/[I⁻]. Negative order in I⁻ means the high-iodide Rh chemistry doesn\'t carry over. Lower water = lower distillation duty = cheaper plant.' },
+      { type: 'mcq', prompt: 'Why is 10–15% water RETAINED in the Monsanto process despite raising distillation cost?',
+        options: ['It is unavoidable', 'To prevent precipitation of RhI3 (active Rh catalyst stays in solution, especially at low PCO in the flash vessel)', 'To moderate temperature', 'To boost selectivity to formic acid'],
+        correct: 1, explain: 'Slide L9. The Rh dimer chemistry needs aquo ligands; below ~10% water, RhI3 precipitates and the catalyst is lost. Cativa\'s key advance was running stable below 8% water.' }
     ]
   },
   {
     id: 'L10', date: 'WK10', name: 'Ethylbenzene & Styrene', questions: [
-      { type: 'mcq', prompt: 'Styrene is industrially produced from:',
-        options: ['Direct oxidation of benzene', 'Two steps: benzene + ethylene → ethylbenzene (EB), then EB dehydrogenation', 'Cumene hydroperoxide route', 'Steam cracking of toluene'],
-        correct: 1, explain: '>95% of styrene capacity: (1) alkylation B + E → EB, (2) catalytic dehydrogenation EB → S + H2 at ~600°C. Co-product H2 has fuel value.' },
-      { type: 'mcq', prompt: 'Modern ethylbenzene processes (ExxonMobil EBMax, Lummus, etc.) use ZEOLITE catalysts (Y-, BETA-, MCM-22, ZSM-5) instead of the older Friedel-Crafts AlCl3 because:',
-        options: ['Zeolites are cheaper', 'No aqueous waste, no corrosion, better selectivity (less polyalkylation), and easy regeneration by burning coke', 'AlCl3 is now illegal in the EU', 'Zeolites give faster kinetics only'],
-        correct: 1, explain: 'AlCl3 chemistry generates acidic wastewater, corrodes equipment, and leaves catalyst residues. Zeolites: clean, recyclable, shape-selective. Coke regenerated by controlled air burn.' },
-      { type: 'mcq', prompt: 'The EB → Styrene + H2 dehydrogenation step is:',
-        options: ['Exothermic, ΔG° = 0 around 400°C', 'Endothermic, ΔG° = 0 around 700°C — unfavorable equilibrium needs high T and low P', 'Mole-neutral', 'Slightly exothermic at all temperatures'],
-        correct: 1, explain: 'Strongly endothermic (~125 kJ/mol). Mole-increasing → low P helps. Industrially: 550-620°C, sub-atmospheric or with steam dilution, multistage adiabatic with interstage heating.' },
-      { type: 'mcq', prompt: 'In the styrene reactor, the role of STEAM dilution is to (multiple): lower hydrocarbon partial pressure (favors product), provide heat, and:',
-        options: ['Cool the catalyst', 'Gasify coke deposits (C + H2O → CO + H2) keeping the Fe2O3-K2CO3 catalyst clean', 'Provide hydrogen via WGS', 'Suppress styrene polymerization'],
-        correct: 1, explain: 'Three roles for steam: (1) lower PEB → shift equilibrium, (2) heat carrier, (3) coke gasification. The K2CO3 promoter catalyzes the coke gasification reaction.' },
-      { type: 'numeric', prompt: 'Typical SINGLE-PASS EB conversion in a styrene reactor (equilibrium ≈ 80%) is around what %? (give a representative number)',
-        answer: 60, tolerance: 15, units: '%',
-        explain: 'Industrial practice: 40-70% per pass with ~90% selectivity to styrene. Unreacted EB recycled. Inhibitors injected in the distillation train (vacuum) to prevent styrene polymerization.' }
+      { type: 'mcq', prompt: 'Styrene is produced via two catalytic steps. Step 1 (alkylation) modern process uses:',
+        options: ['Friedel-Crafts AlCl3 + ethyl chloride only', 'Zeolite catalysts (Y, BETA, MCM-22 for liquid phase; ZSM-5 for gas phase) — no aqueous waste, no corrosion, regen by burning coke', 'Pt/Al2O3', 'V2O5/TiO2'],
+        correct: 1, explain: 'Slide L10 EB synthesis. ExxonMobil Badger EBMax (liquid, MCM-22), Mobil-Badger (gas, ZSM-5). HLP AlCl3 process still exists but newer plants are zeolite-based. T<289°C (critical T of benzene) in liquid; 400°C and 20 bar in gas phase.' },
+      { type: 'mcq', prompt: 'In the ZSM-5 GAS-PHASE alkylation, the benzene/ethylene ratio is held at:',
+        options: ['1:1 mol/mol', '8–15 mol/mol benzene excess; T = 400°C; P = 20 bar; multistage adiabatic cooled by ethylene', '1:5 (excess ethylene)', '50:1'],
+        correct: 1, explain: 'Slide L10. Big benzene excess suppresses polyethylbenzene (PEB) formation; ZSM-5 shape-selectivity also hinders PEB diffusion in the pores → high selectivity. PEBs are recycled and transalkylated back to EB.' },
+      { type: 'mcq', prompt: 'EB → STYRENE + H2 is:',
+        options: ['Exothermic, ΔG=0 around 400°C', 'ENDOTHERMIC; ΔG°=0 around 700°C → operate up to ~600°C (catalyst stability limit); above 600°C, de-alkylation to toluene/benzene/ethylene becomes problematic', 'Mole-neutral', 'Strongly exothermic'],
+        correct: 1, explain: 'Slide L10 dehydrogenation. Standard catalyst: Fe2O3-Cr2O3 + K2CO3 promoter. Conv per pass: 40–70% (equilibrium ~80%). Selectivity to styrene: ~90%.' },
+      { type: 'mcq', prompt: 'In the styrene reactor, STEAM (steam/EB ≈ 2.5–3 w/w, superheated at 800°C) has FOUR roles:',
+        options: ['Cool the reactor only', '(1) Lower PEB → favor dehydrogenation, (2) provide reaction heat, (3) gasify coke (C + 2H2O → CO2 + 2H2), (4) easily separable from organic', 'Provide catalyst', 'Add hydrogen via WGS'],
+        correct: 1, explain: 'Slide L10 styrene reactor. Note: gasification is one of the reasons K2CO3 is included as a promoter — alkali catalyzes the C + H2O reaction, keeping the catalyst clean longer.' },
+      { type: 'mcq', prompt: 'In the styrene distillation train, vacuum is used because (Zennaro L10):',
+        options: ['Energy savings', 'Similar boiling points of the components AND to keep T below 100°C to prevent styrene auto-polymerization. Inhibitors injected: tert-butyl catechol (TBC), aliphatic amines, sulfur', 'Vacuum is required for the catalyst', 'To remove water'],
+        correct: 1, explain: 'Slide L10 distillation. Styrene self-polymerizes above ~100°C → vacuum operation + chemical inhibitors mandatory. TBC is the classic polymerization inhibitor in industry.' }
     ]
   },
   {
     id: 'L11', date: 'WK11', name: 'Formaldehyde', questions: [
-      { type: 'mcq', prompt: 'The overall stoichiometry of industrial formaldehyde production is:',
-        options: ['CH3OH + H2O → CH2O + 2H2', 'CH3OH + ½O2 → CH2O + H2O', 'CH4 + O2 → CH2O + H2O', '2 CH3OH → CH2O + CH3OH·H2O'],
-        correct: 1, explain: 'Both routes (silver oxidative dehydrogenation AND Formox direct oxidation) deliver this net stoichiometry, though by different mechanisms.' },
-      { type: 'mcq', prompt: 'The SILVER process for formaldehyde operates:',
-        options: ['Below the LEL with excess air, at 300-400°C', 'Above the UEL with excess methanol (defect of O2), at 600-720°C', 'At equilibrium-controlled conditions', 'Without catalyst'],
-        correct: 1, explain: 'Silver runs RICH (above UEL, methanol-excess) at high T. Mechanism is dehydrogenation (CH3OH → CH2O + H2) followed by H2 combustion.' },
-      { type: 'mcq', prompt: 'The Formox (Fe-Mo oxide) process for formaldehyde operates:',
-        options: ['Below the LEL (excess air, methanol-lean), at 300-400°C', 'Above the UEL at 700°C', 'In the explosive range with safety valves', 'In pure O2'],
-        correct: 0, explain: 'Formox runs LEAN (below LEL, methanol-dilute) at lower T. Multitubular reactor with molten-salt cooling (Dowtherm). Better selectivity and lower fire risk than silver.' },
-      { type: 'mcq', prompt: 'The Formox catalyst (Fe2O3-MoO3) operates by a MARS-VAN KREVELEN mechanism, which means:',
-        options: ['Reactants combine in the gas phase', 'Catalyst lattice oxygen is consumed (CH3OH oxidized by O²⁻) then re-oxidized by gas-phase O2', 'A radical chain in the gas phase', 'Photochemical activation'],
-        correct: 1, explain: 'M–vK: redox cycle of the metal oxide. MoO3 is the active phase: Mo⁶⁺ reduced to Mo⁴⁺ by methanol, then re-oxidized by O2. The O²⁻ is the active oxygen species.' },
-      { type: 'error', prompt: 'One statement is FALSE.',
-        statements: [
-          'Formaldehyde is the most important industrial aldehyde, mainly used in resins',
-          'Methanol-air mixtures are flammable between roughly 6.7% and 36% v/v',
-          'The silver process operates with excess methanol (rich)',
-          'Both silver and Formox routes use a Brønsted-acid-only mechanism'
-        ], wrongIndex: 3, explain: 'Silver: oxidative dehydrogenation + H2 combustion. Formox: Mars-Van Krevelen redox. Neither is Brønsted-acid catalysis — both are oxide redox.' }
+      { type: 'mcq', prompt: 'Both industrial formaldehyde processes have the same NET stoichiometry CH3OH + ½ O2 → CH2O + H2O (ΔH°=−38 kcal/mol). However, the SILVER process is:',
+        options: ['Pure direct oxidation', 'Two-step: CH3OH → CH2O + H2 (slow, endothermic +20 kcal/mol) followed by H2 + ½O2 → H2O (−58 kcal/mol). Excess methanol (>36% v/v), above UEL', 'Catalyzed by Fe-Mo', 'Operating at 200°C'],
+        correct: 1, explain: 'Slide L11 silver process. The dehydrogenation step is the slow one and needs high T (680–720°C for complete conversion BASF route, 600–650°C for incomplete-conv route). H2 combustion supplies the heat for the dehydrogenation.' },
+      { type: 'mcq', prompt: 'The FORMOX (direct oxidation) process operates:',
+        options: ['Above the UEL like the silver process', 'Below the LEL (excess air, methanol < 6.7% v/v), with inert recycle. T = 300–400°C. Fe2O3-MoO3 (19/81 w/w) catalyst, multitubular reactor cooled by Dowtherm', 'At 700°C with Ag', 'At 1000°C without catalyst'],
+        correct: 1, explain: 'Slide L11 Formox. Active phase MoO3 (Mo⁶⁺ ⇌ Mo⁴⁺), Fe is promoter for catalyst reoxidation. Mars-Van Krevelen mechanism. Catalyst life: 2 years (MoO3 sublimes at hot-spots, which is the main deactivation).' },
+      { type: 'mcq', prompt: 'The FORMOX kinetic mechanism (Mars-Van Krevelen) has rate-limiting reduction:',
+        options: ['rRed = kRed · PCH3OH^α · θox (α≈1, β≈0.5, γ≈1) with H2O inhibition by adsorption on oxidized sites', 'Independent of any concentration', 'First order in O2 only', 'Bimolecular CH3OH+O2'],
+        correct: 0, explain: 'Slide L11 Formox kinetics. CH3OH(g) + Catox → CH2O(g) + H2O + CatRed; CatRed + ½O2 → Catox. H2O competes with O2 for the oxidized sites — strong inhibitor. Power law alternative: α=0.94, β=0.1, γ=−0.45.' },
+      { type: 'numeric', prompt: 'In the silver process (complete-conversion BASF route), methanol conversion is typically what percentage?',
+        answer: 97, tolerance: 2, units: '%',
+        explain: 'Slide L11 silver process: 97–98% conv at 680–720°C, yield 89.5–90.5% formaldehyde. The biggest BASF plant has a 3.2 m diameter reactor and produces 72,000 t/y as 100% CH2O.' },
+      { type: 'mcq', prompt: 'Comparison advantages of FORMOX vs Silver (Zennaro):',
+        options: ['Silver is always better', 'Formox: no MeOH recycle, lower T (less material problems), higher CH2O concentration without distillation. Silver: more compact / no air-excess penalty', 'They are economically identical', 'Formox uses more catalyst'],
+        correct: 1, explain: 'Slide L11 comparison. Formox\'s air-excess penalty = larger reactors and bigger off-gas duty (CH2O in purge must be catalytically incinerated). Silver risks flammable mixtures on leakage; Formox is intrinsically safer.' }
     ]
   },
   {
     id: 'L12', date: 'WK12', name: 'Phenolic Resins', questions: [
-      { type: 'mcq', prompt: 'Phenolic resins (Bakelite-type) are formed by condensation of:',
-        options: ['Phenol + ethylene', 'Phenol + formaldehyde, with water elimination', 'Phenol + acetic acid', 'Phenol + cumene hydroperoxide'],
-        correct: 1, explain: 'Phenol + CH2O under acid or base catalysis → methylol-phenol → linked via -CH2- bridges. The classic first synthetic thermoset (Baekeland, 1907).' },
-      { type: 'mcq', prompt: 'NOVOLAC and RESOL phenolic resins differ in:',
-        options: ['Color only', 'Catalysis: novolac uses acid + excess phenol (no reactive groups left); resol uses base + excess formaldehyde (still reactive)', 'Phenol substituent', 'Temperature of synthesis'],
-        correct: 1, explain: 'Novolac: acid-catalyzed, P:F > 1 → thermoplastic, needs a hardener (hexa) for curing. Resol: base-catalyzed, P:F < 1 → thermoset, self-curing on heating.' },
-      { type: 'mcq', prompt: 'A THERMOSET (cured phenolic resin) versus a THERMOPLASTIC:',
-        options: ['Both can be melted and reshaped', 'Thermoset has a 3D crosslinked network that cannot be remelted; thermoplastic flows on heating', 'Thermoset is always softer', 'No structural difference'],
-        correct: 1, explain: 'Crosslinks vs linear chains. Bakelite, epoxy, vulcanized rubber, urea-formaldehyde — all thermosets. Once cured, only mechanical recycling.' },
-      { type: 'mcq', prompt: 'A major industrial application of phenolic resins is:',
-        options: ['Soft drinks bottles (PET)', 'Wood-bonding adhesives (plywood, OSB) and thermal/electrical insulators', 'Synthetic fibers (nylon)', 'Liquid fuels'],
-        correct: 1, explain: 'Phenolics: plywood/OSB binders, foundry sand binders, brake linings, electrical laminates, refractory bonds. Strength, heat resistance, dimensional stability after cure.' },
-      { type: 'error', prompt: 'One is FALSE.',
-        statements: [
-          'Bakelite was the first fully synthetic plastic (1907)',
-          'Novolac resins require a hardener (e.g., hexamine) for the final cure',
-          'Resol resins can self-cure on heating without an external hardener',
-          'All phenolic resins are thermoplastics that can be remelted'
-        ], wrongIndex: 3, explain: 'Once cured, phenolics are THERMOSETS — crosslinked and infusible. The uncured liquid is moldable; the cured part is not.' }
+      { type: 'mcq', prompt: 'Baekeland\'s 1907 patent on phenolic resins was significant because it represents:',
+        options: ['A new biological polymer', 'The first fully SYNTHETIC polymer', 'A natural rubber improvement', 'A discovery already known to the Romans'],
+        correct: 1, explain: 'Slide L12 p.1. Bakelite kicked off the synthetic polymer industry. 60-year durability + flame resistance still keep phenolics in construction, electronics, and automotive applications.' },
+      { type: 'mcq', prompt: 'NOVOLAC vs RESOL phenolic resins (per Zennaro L12):',
+        options: ['Identical', 'Novolac: Molar Ratio (formaldehyde/phenol) < 1, ACID catalysis (pH<7), THERMOPLASTIC, needs a hardener. Resol: M.R. > 1, BASE catalysis (pH>7), THERMOSETTING, self-cures', 'Novolac is the modern, resol the historical', 'They have the same M.R.'],
+        correct: 1, explain: 'Slide L12 p.2. Get the M.R. and pH right and the rest follows. Novolac catalysts: oxalic acid OR 25% H2SO4. Resols use NaOH or similar bases.' },
+      { type: 'mcq', prompt: 'In a batch novolac process, the correct ORDER of additions is:',
+        options: ['Formaldehyde first, then phenol', 'Phenol FIRST, then formaldehyde, with charge of water and catalyst between', 'All at once', 'Catalyst last'],
+        correct: 1, explain: 'Slide L12 batch process. Adding phenol second can give runaway exotherm and poor conversion control. The reaction is "very exothermic — efficiency in heat removal is important."' },
+      { type: 'match', prompt: 'Match each phenolic-resin application to the property it exploits.',
+        pairs: [
+          { left: 'Phenolic foams in buildings', right: 'Thermal insulation + flame resistance' },
+          { left: 'Brake pads', right: 'Heat resistance under braking' },
+          { left: 'Plywood / OSB binders', right: 'Wood adhesive durability' },
+          { left: 'Printed Circuit Boards', right: 'Low dielectric constant + moisture / high-T stability' }
+        ], explain: 'Slide L12 application pages. Phenolic resins\' "boring" reliability is what makes them stick around for 100+ years.' },
+      { type: 'mcq', prompt: 'In Zennaro\'s CONTINUOUS novolac process, the distillation train uses three autoclaves (A212, A202, A219). Their tasks:',
+        options: ['All do the same thing', 'A212 atm-distill water; A202 atm-distill water + some phenol (potentially vacuum + stripping); A219 vacuum + stripping to remove phenol', 'A212 reacts, A202 separates, A219 stores', 'They handle the catalyst'],
+        correct: 1, explain: 'Slide L12 continuous process diagram. Sequential water removal + phenol stripping yields raw novolac → adjustment phase → flakes via cooling belt.' }
     ]
   },
   {
     id: 'L13', date: 'WK13', name: 'Maleic & Phthalic Anhydride', questions: [
-      { type: 'mcq', prompt: 'Modern industrial MALEIC ANHYDRIDE (MA) is produced primarily from:',
-        options: ['Benzene oxidation (legacy)', 'n-Butane oxidation over a V-P-O (vanadium phosphorus oxide) catalyst', 'Naphtha cracking', 'Maleic acid dehydration'],
-        correct: 1, explain: 'n-C4H10 + 3.5 O2 → C4H2O3 + 4 H2O. V-P-O catalyst, fluidized or multitubular fixed bed. Replaced benzene route for both cost and benzene-emission reasons.' },
-      { type: 'mcq', prompt: 'PHTHALIC ANHYDRIDE (PA) is produced industrially from:',
-        options: ['Naphthalene only', 'Mainly o-xylene oxidation over V2O5/TiO2 (some naphthalene still used)', 'Benzene oxidation', 'Cumene oxidation'],
-        correct: 1, explain: 'o-xylene + 3 O2 → phthalic anhydride + 3 H2O. V2O5 on anatase TiO2 carrier, multitubular reactor with molten salt cooling. Highly exothermic, near hot-spot conditions.' },
-      { type: 'mcq', prompt: 'The reactor of choice for both MA and PA oxidations is a:',
-        options: ['Single adiabatic packed bed', 'Multitubular reactor with intense heat removal via molten salt or boiling water', 'Slurry CSTR', 'Trickle bed'],
-        correct: 1, explain: 'Both oxidations are violently exothermic. Multitubular with cooled tubes (~1000s) is the only way to dispose of the heat fast enough and avoid runaway / over-oxidation to CO2.' },
-      { type: 'mcq', prompt: 'PHTHALIC ANHYDRIDE is mainly used as a precursor for:',
-        options: ['Polyethylene', 'Plasticizers (phthalate esters), alkyd resins, polyester resins', 'Synthetic gasoline', 'Detergents'],
-        correct: 1, explain: 'Phthalate plasticizers (e.g., DOP/DEHP for flexible PVC), alkyd paints, unsaturated polyester resins for composites. Phthalate environmental concerns drove growth in non-phthalate alternatives.' },
-      { type: 'mcq', prompt: 'MALEIC ANHYDRIDE\'s biggest downstream application is:',
-        options: ['Unsaturated polyester resins (UPR) for composites/coatings, and 1,4-butanediol/THF', 'Direct fuel use', 'PVC plasticizer (only)', 'Detergents'],
-        correct: 0, explain: 'UPR is the #1 outlet (fiberglass composites, marine resins). Other major uses: butanediol/GBL/THF via hydrogenation, fumaric/maleic acid, copolymers.' }
+      { type: 'mcq', prompt: 'MALEIC ANHYDRIDE today is produced principally from:',
+        options: ['Benzene (still the dominant route)', 'n-BUTANE oxidation (currently > 67% of production) over a V/P/O catalyst with active phase (VO)2P2O7', 'Acetylene + CO', 'Methanol'],
+        correct: 1, explain: 'Slide L13 MA. Benzene route was dominant pre-60s. Monsanto started commercial n-butane oxidation in 1974 (V-P-O). It\'s the ONLY industrial selective oxidation of a paraffin.' },
+      { type: 'mcq', prompt: 'In the n-butane → MA process, the fluidized-bed (ALMA, Polynt) advantages over fixed-bed include:',
+        options: ['No advantages', 'Lower investment costs, isothermal conditions, higher MA concentrations — but catalyst abrasion and back-mixing penalties', 'Smaller plant only', 'Reduced energy use only'],
+        correct: 1, explain: 'Slide L13 ALMA. Feed ~4% C4H10 in air (≈stoichiometric, falls within explosion range — only acceptable in fluidized bed). Conv >80%, sel up to 70%, T = 390–430°C. Largest plant 50,000 t/y, started 1994.' },
+      { type: 'numeric', prompt: 'MA from n-butane: ΔH = ? kcal/mol (Zennaro\'s slide value)',
+        answer: -335, tolerance: 10, units: 'kcal/mol',
+        explain: 'Slide L13 MA stoichiometry: C4H10 + 7/2 O2 → C4H2O3 + 4 H2O, ΔH = −335 kcal/mol. Benzene route: −447 kcal/mol (more exothermic because of 2 CO2 by-products → wastes 2 C atoms).' },
+      { type: 'mcq', prompt: 'PHTHALIC ANHYDRIDE today is produced principally from:',
+        options: ['Naphthalene (currently the dominant route)', 'o-XYLENE oxidation (~85% of world production) over V2O5-TiO2 (ANATASE form), multitubular molten-salt cooled', 'p-xylene', 'Benzene'],
+        correct: 1, explain: 'Slide L13 PA. Anatase → rutile phase transition in hot-spots is the main deactivation mechanism (catalyst life 2–4 years). Tube ID 25 mm, length 3–3.5 m, 10,000–20,000 tubes, graded catalyst bed (2–3 layers, depth 2.8 m), egg-shell catalyst.' },
+      { type: 'mcq', prompt: 'PA reactor uses MOLTEN SALT cooling. What is the typical eutectic mix used by Zennaro?',
+        options: ['Pure NaCl', 'Eutectic KNO3:NaNO3 ≈ 57:43 — used in BOTH the MA-from-benzene and PA-from-o-xylene reactors', 'Liquid sodium', 'Mercury'],
+        correct: 1, explain: 'Slide L13. Same salt is the workhorse for selective oxidation reactors — high heat capacity, good heat transfer, stable up to ~550°C. Cooling duty drives the high-pressure steam generation co-product.' }
     ]
   },
   {
     id: 'L14', date: 'WK14', name: 'Vinyl Chloride Monomer (VCM)', questions: [
-      { type: 'mcq', prompt: 'The MODERN balanced VCM process integrates three steps:',
-        options: ['Direct chlorination of ethylene → EDC; oxychlorination of ethylene → EDC; thermal cracking of EDC → VCM + HCl (recycled)', 'Acetylene + HCl only', 'Ethane + Cl2 in one step', 'Vinyl alcohol dehydration'],
-        correct: 0, explain: 'The "balanced VCM" process consumes ALL HCl in-house: chlorination + oxychlorination produce EDC; cracking EDC gives VCM + HCl; that HCl feeds the oxychlorination. Net inputs: ethylene + Cl2 + O2.' },
-      { type: 'mcq', prompt: 'Direct chlorination of ethylene (CH2=CH2 + Cl2 → ClCH2CH2Cl, EDC) is performed in:',
-        options: ['Gas phase at 800°C', 'Liquid phase over FeCl3 at 50-70°C, sometimes 100-150°C (HT) — very selective', 'Heterogeneous solid acid', 'Photo-reactor'],
-        correct: 1, explain: 'Electrophilic Cl addition in EDC solvent with FeCl3 catalyst. Highly selective (>99%) and exothermic. HT variant raises T to use the heat for separation duty.' },
-      { type: 'mcq', prompt: 'OXYCHLORINATION (CH2=CH2 + 2 HCl + ½ O2 → ClCH2CH2Cl + H2O) exists in the VCM process specifically to:',
-        options: ['Increase ethylene conversion', 'CONSUME the HCl by-product of EDC cracking, closing the chlorine loop', 'Make pure HCl', 'Replace direct chlorination'],
-        correct: 1, explain: 'Without oxychlorination, the plant either dumps HCl (waste) or sells it (low value). Oxychlorination recycles HCl back into EDC → process self-balances on chlorine.' },
-      { type: 'mcq', prompt: 'The thermal cracking step ClCH2CH2Cl → CH2=CHCl + HCl is:',
-        options: ['Exothermic at low T', 'Endothermic, high-T (~500°C) tubular furnace, partial conversion (~50-60% per pass) with quench and EDC recycle', 'Catalytic at low T', 'Below 100°C'],
-        correct: 1, explain: 'EDC pyrolysis in fired tubes at 480-530°C, ~25-30 bar. Conversion limited to ~55% per pass to control coking and selectivity. Product gases quenched fast; HCl, VCM, unreacted EDC separated.' },
-      { type: 'error', prompt: 'One statement is FALSE.',
-        statements: [
-          'VCM is polymerized to PVC, the basis of pipes, profiles, and flexible plastics',
-          'The balanced VCM process net consumes ethylene + Cl2 + O2 (no net HCl in/out)',
-          'EDC is also a useful solvent for some catalytic systems',
-          'Oxychlorination uses Cl2 as the chlorine source'
-        ], wrongIndex: 3, explain: 'Oxychlorination uses HCl (not Cl2) as the chlorine source — that is its entire reason for existing. The CuCl2/Al2O3 catalyst activates HCl + O2 to chlorinate ethylene.' }
+      { type: 'mcq', prompt: 'The modern "BALANCED" VCM process consumes feedstock as:',
+        options: ['Acetylene + HCl (legacy, HgCl2 catalyst)', '2 CH2=CH2 + Cl2 + ½ O2 → 2 VCM + H2O (net stoichiometry): direct chlorination + EDC cracking + oxychlorination', 'Ethane + Cl2', 'EDC alone'],
+        correct: 1, explain: 'Slide L14 balanced process. Three steps integrated: (1) C2H4 + Cl2 → EDC (ΔH=−43 kcal/mol), (2) 2 EDC → 2 VCM + 2 HCl (ΔH=+17 kcal/mol per VCM), (3) C2H4 + 2 HCl + ½O2 → EDC + H2O (ΔH=−57 kcal/mol). All HCl is recycled in-house.' },
+      { type: 'mcq', prompt: 'Direct chlorination of ethylene (Low T process, LTC) operates:',
+        options: ['Gas phase at 800°C', 'Liquid phase using EDC as solvent, FeCl3 catalyst, T = 50–70°C, P = 1 bar; Cl2 conv 100%, ethylene selectivity 99%', 'Photo-reactor', 'Solid acid catalysis'],
+        correct: 1, explain: 'Slide L14 LTC. Below Tb of EDC (84°C). LTC yield 99%. HTC (high-T) operates above 84°C — vapor EDC condensed downstream; no EDC drying column needed; rate limited by ethylene absorption into EDC.' },
+      { type: 'mcq', prompt: 'OXYCHLORINATION exists in the VCM process specifically to:',
+        options: ['Increase ethylene yield only', 'CONSUME the HCl byproduct of EDC cracking, closing the chlorine loop in-house', 'Replace direct chlorination', 'Add safety margin'],
+        correct: 1, explain: 'Slide L14. Without oxychlorination, the plant would either vent HCl (waste) or sell it (low value). Oxychlorination CuCl2-KCl/Al2O3 catalyst at T=220–270°C, P=5–7 bar; conv 95%, sel to EDC 91–96%.' },
+      { type: 'mcq', prompt: 'EDC thermal cracking (step 2 of the balanced process):',
+        options: ['Catalytic, exothermic', 'Gas-phase pyrolysis, radical mechanism, ENDOTHERMIC. T < 550°C (avoid acetylene). Conv 50–60% per pass. P = 10–20 bar (for downstream EDC condensation)', 'Liquid phase at 100°C', 'Photochemical'],
+        correct: 1, explain: 'Slide L14 cracking. Furnace coils dia 2–20 cm, lengths up to 1000 m. Chlorine or other radical promoters can be added. EDC and VCM (and HCl) are separated downstream by distillation.' },
+      { type: 'numeric', prompt: 'VCM (CH2=CHCl) vapor pressure at 20°C is approximately what value? (Zennaro slide L14)',
+        answer: 3.4, tolerance: 0.1, units: 'bar',
+        explain: 'Slide L14 p.1: Pv(20°C) = 3.4 bar. Hence VCM is stored and transported as liquefied compressed gas. Teb = −13.4°C, Tc = 153.8°C. Highly toxic, carcinogenic — driving extreme containment standards.' }
     ]
   }
 ];
 
-// Boss round: shuffled mix + a few exclusive integrative questions
+// Boss round: integrative cross-lecture questions
 const BOSS_EXCLUSIVE = [
-  { type: 'mcq', prompt: 'You are designing a new petrochemical complex starting from natural gas. The CORRECT sequencing of major upstream blocks is:',
-    options: ['Gas → reformer → methanol; separately gas → cracker → ethylene', 'Gas treatment (sweetening, dehydration) → SMR (syngas) → methanol / ammonia / FT', 'Gas → distillation → olefins', 'Gas → oxidation → all products'],
-    correct: 1, explain: 'Always: clean the gas FIRST (sulfur kills downstream catalysts). Then SMR for syngas, which branches to methanol, ammonia, FT-liquids, oxo-alcohols. Olefins come from the steam cracker (different route, naphtha or ethane).' },
-  { type: 'mcq', prompt: 'A reactor for an HIGHLY EXOTHERMIC selective oxidation (e.g., o-xylene → phthalic anhydride) is best implemented as:',
-    options: ['Single adiabatic bed', 'Multitubular with molten salt cooling — thousands of small-diameter tubes for fast heat removal', 'Slurry CSTR at atmospheric pressure', 'Trickle bed gas-liquid'],
-    correct: 1, explain: 'Selective oxidation runs near the runaway boundary. Thousands of narrow tubes immersed in a high-T molten-salt bath give the thermal coupling needed to hold isothermal-ish operation and avoid over-oxidation to CO2.' },
-  { type: 'mcq', prompt: 'Across the value chain, the SAME catalyst principle appears: M–vK lattice-oxygen redox underpins which of these processes?',
-    options: ['Methanol synthesis on Cu/ZnO/Al2O3', 'Styrene production by EB dehydrogenation', 'Phthalic anhydride from o-xylene on V2O5/TiO2 and formaldehyde from methanol on Fe-Mo oxide', 'Acetic acid carbonylation on Cativa (Ir)'],
-    correct: 2, explain: 'Mars-Van Krevelen = lattice-O redox. Classic systems: V2O5/TiO2 (PA), Fe2O3-MoO3 (formaldehyde Formox), V-P-O (maleic anhydride), BiMoO (acrolein). Recognize it and you understand half of selective oxidation.' },
-  { type: 'numeric', prompt: 'A methanol plant with 90% single-pass CO conversion and 97% selectivity to methanol. What is the overall yield (methanol/CO fed, single-pass)? (%)',
+  { type: 'mcq', prompt: 'Mars–Van Krevelen lattice-oxygen redox mechanism appears in several of Zennaro\'s lectures. Which set of catalysts BEST illustrates it?',
+    options: ['Cu/ZnO/Al2O3 (methanol synthesis)', 'V2O5-TiO2 (phthalic anhydride from o-xylene) AND Fe2O3-MoO3 (formaldehyde via Formox) AND V/P/O (maleic anhydride from n-butane)', 'AlCl3 (Friedel-Crafts EB) AND Pt/Al2O3 (reforming)', 'Cativa (Ir/I−)'],
+    correct: 1, explain: 'Selective oxidation = redox of the oxide lattice oxygen. The three classic M–vK industrial systems: V-Ti for PA, Fe-Mo for formaldehyde, V-P-O for MA. Knowing this pattern unlocks half the L11/L13 exam.' },
+  { type: 'mcq', prompt: 'A new plant is designed to convert natural gas into PVC. The CORRECT sequence of major upstream blocks is:',
+    options: ['NG → steam cracker → PVC', 'NG treatment (sweetening, dehydration) → steam reforming → methanol → MTO (or NG → cracker → ethylene); then ethylene + Cl2 + O2 → VCM (balanced) → PVC polymerization', 'NG → fermentation → PVC', 'NG → catalytic reforming → PVC'],
+    correct: 1, explain: 'PVC requires VCM, which requires ethylene + chlorine. Ethylene from steam cracking of NGL or from MTO. The balanced VCM process closes the chlorine loop with oxychlorination — a textbook example of mass integration.' },
+  { type: 'numeric', prompt: 'A methanol plant uses Cu/ZnO/Al2O3 with 90% CO conv per pass and 97% methanol selectivity. What is the single-pass YIELD (CH3OH/CO fed) in percent?',
     answer: 87.3, tolerance: 1, units: '%',
-    explain: 'Yield = X × S = 0.90 × 0.97 = 0.873 = 87.3% per pass. With recycle (and adequate purge), overall yield approaches the selectivity itself.' },
-  { type: 'mcq', prompt: 'The "balanced VCM" process is a textbook example of:',
-    options: ['Linear waste-generating process', 'Atom-economy / by-product recycling within a single plant (HCl from cracking → fed to oxychlorination)', 'A catalyst regeneration loop', 'A heat-integration only loop'],
-    correct: 1, explain: 'Process intensification 101: by-product of one reactor becomes the feed of another. Net inputs: only ethylene + Cl2 + O2. No HCl wasted, no HCl bought. The benchmark for circular process design.' }
+    explain: 'Yield = X · S = 0.90 × 0.97 = 0.873 = 87.3%. With recycle (and a purge to bleed inerts), the overall yield approaches the selectivity itself. CO conv is set by reactor design (multistage adiabatic w/ intercooling, or Lurgi multitubular).' },
+  { type: 'mcq', prompt: 'Across the chemical industry, deactivation by COKING is mitigated by:',
+    options: ['Doing nothing', 'Steam co-feed (gasifies coke: C + H2O → CO/CO2/H2) — used in steam cracking, styrene dehydrogenation, methanol steam reforming; alkali promoters (K2CO3 on Fe2O3-Cr2O3 styrene catalyst) catalyze the gasification', 'Lowering temperature', 'Adding more N2'],
+    correct: 1, explain: 'Steam is a universal anti-coke tool — it lowers HC partial pressure AND chemically removes coke. The K2CO3 promoter on the styrene catalyst is a beautiful piece of co-design: alkali catalyzes C + H2O → CO + H2.' },
+  { type: 'mcq', prompt: 'Three of Zennaro\'s industrial processes use a HOMOGENEOUS catalyst (with the cost of difficult catalyst/product separation). Which trio?',
+    options: ['Methanol synthesis (Cu/ZnO/Al2O3); steam cracking; PA from o-xylene', 'BASF EB-alkylation (AlCl3 + EtCl); Monsanto acetic acid (Rh/CH3I); Cativa acetic acid (Ir/CH3I)', 'HDS; reforming; FCC', 'Formox; styrene dehydrog; MA from n-butane'],
+    correct: 1, explain: 'Trio of liquid-phase, soluble-metal catalysts. All three pay the homog penalty: corrosion (stainless lined with Hastelloy in acetic acid), catalyst loss/recovery, water content management. The modern trend is to move toward zeolite (heterog) variants where possible — exemplified by EB shifting from AlCl3 → MCM-22/ZSM-5.' }
 ];
 
 // ============================================================
