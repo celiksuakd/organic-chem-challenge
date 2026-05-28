@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PETROCHEM CHALLENGE — Industrial Organic Chemistry</title>
+<style>
+  :root {
+    --bg: #07090f;
+    --bg2: #0e1320;
+    --card: #131a2c;
+    --card2: #1a2340;
+    --text: #e6f1ff;
+    --muted: #6b7a99;
+    --accent: #00ff9f;
+    --accent2: #00d9ff;
+    --danger: #ff3860;
+    --warn: #ffb800;
+    --locked: #2a3147;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: "";
+    position: fixed; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0,255,159,0.02) 0px,
+      rgba(0,255,159,0.02) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    z-index: 9999;
+  }
+  body::after {
+    content: "";
+    position: fixed; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.5) 100%);
+    z-index: 9998;
+  }
+  #app {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HUD */
+  .hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 18px;
+    background: var(--card);
+    border: 1px solid var(--accent);
+    box-shadow: 0 0 20px rgba(0,255,159,0.15);
+    margin-bottom: 20px;
+    border-radius: 6px;
+  }
+  .hud-item { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+  .hud-label { color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-size: 11px; }
+  .hud-value { color: var(--accent); font-weight: bold; font-size: 18px; }
+  .lives { display: flex; gap: 4px; }
+  .life { width: 18px; height: 18px; color: var(--danger); font-size: 18px; line-height: 1; }
+  .life.lost { color: var(--locked); }
+  .streak.hot .hud-value { color: var(--warn); text-shadow: 0 0 10px var(--warn); }
+  .streak.fire .hud-value { color: var(--danger); text-shadow: 0 0 14px var(--danger); animation: pulse 0.6s infinite; }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-3px, 2px); }
+    40% { transform: translate(3px, -2px); }
+    60% { transform: translate(-2px, -2px); }
+    80% { transform: translate(2px, 2px); }
+    100% { transform: translate(0); }
+  }
+
+  /* TITLE SCREEN */
+  .title-screen { text-align: center; padding-top: 80px; }
+  .title {
+    font-size: 64px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-shadow: 0 0 24px var(--accent), 0 0 60px rgba(0,255,159,0.3);
+    margin-bottom: 12px;
+  }
+  .subtitle {
+    color: var(--accent2);
+    letter-spacing: 6px;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  .tagline {
+    color: var(--muted);
+    margin-bottom: 60px;
+    font-size: 15px;
+  }
+  .boot-log {
+    text-align: left;
+    max-width: 500px;
+    margin: 30px auto;
+    background: var(--bg2);
+    border: 1px solid var(--locked);
+    padding: 16px;
+    font-size: 12px;
+    color: var(--muted);
+    min-height: 140px;
+  }
+  .boot-log .line { margin: 2px 0; }
+  .boot-log .ok { color: var(--accent); }
+  .boot-log .warn { color: var(--warn); }
+
+  .btn {
+    background: transparent;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    padding: 14px 32px;
+    font-family: inherit;
+    font-size: 16px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    margin: 6px;
+  }
+  .btn:hover {
+    background: var(--accent);
+    color: var(--bg);
+    box-shadow: 0 0 24px var(--accent);
+  }
+  .btn.secondary { border-color: var(--muted); color: var(--muted); }
+  .btn.secondary:hover { background: var(--muted); color: var(--bg); box-shadow: none; }
+  .btn.danger { border-color: var(--danger); color: var(--danger); }
+  .btn.danger:hover { background: var(--danger); color: var(--bg); box-shadow: 0 0 24px var(--danger); }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* MAP */
+  .map-header { text-align: center; margin-bottom: 24px; }
+  .map-title { font-size: 28px; color: var(--accent); letter-spacing: 3px; }
+  .map-sub { color: var(--muted); font-size: 13px; margin-top: 6px; }
+  .room-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .room-card {
+    background: var(--card);
+    border: 1px solid var(--locked);
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .room-card.unlocked {
+    border-color: var(--accent2);
+    box-shadow: 0 0 12px rgba(0,217,255,0.2);
+  }
+  .room-card.unlocked:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow: 0 0 24px rgba(0,255,159,0.4);
+  }
+  .room-card.completed {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, var(--card) 0%, rgba(0,255,159,0.06) 100%);
+  }
+  .room-card.locked { opacity: 0.4; cursor: not-allowed; }
+  .room-card.boss {
+    grid-column: span 2;
+    background: linear-gradient(135deg, var(--card2) 0%, rgba(255,56,96,0.08) 100%);
+    border-color: var(--danger);
+  }
+  .room-card.boss.locked { border-color: var(--locked); }
+  .room-id {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .room-name { font-size: 14px; font-weight: 600; line-height: 1.4; color: var(--text); }
+  .room-date { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .room-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+  .stars { color: var(--warn); letter-spacing: 2px; font-size: 14px; }
+  .mastery { font-size: 11px; color: var(--accent); }
+  .lock-icon { color: var(--muted); }
+
+  /* ROOM (in-game) */
+  .question-screen { padding: 0; }
+  .question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--locked);
+  }
+  .breadcrumb { color: var(--muted); font-size: 12px; letter-spacing: 2px; }
+  .breadcrumb .accent { color: var(--accent); }
+  .q-progress { color: var(--accent2); font-size: 13px; }
+
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--accent2);
+    padding: 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 30px rgba(0,217,255,0.1);
+  }
+  .q-type-badge {
+    display: inline-block;
+    background: var(--bg2);
+    color: var(--accent2);
+    padding: 4px 10px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    border: 1px solid var(--accent2);
+  }
+  .q-prompt {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+  .q-prompt code, .q-prompt .eq {
+    font-family: ui-monospace, monospace;
+    background: var(--bg2);
+    padding: 1px 6px;
+    color: var(--accent);
+    border-radius: 3px;
+  }
+
+  /* MCQ options */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    background: var(--bg2);
+    border: 1px solid var(--locked);
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .option:hover { border-color: var(--accent2); background: var(--card2); }
+  .option.selected { border-color: var(--accent); background: rgba(0,255,159,0.08); }
+  .option.correct { border-color: var(--accent); background: rgba(0,255,159,0.18); box-shadow: 0 0 16px rgba(0,255,159,0.3); }
+  .option.wrong { border-color: var(--danger); background: rgba(255,56,96,0.15); animation: glitch 0.3s; }
+  .option-letter {
+    display: inline-block;
+    width: 28px; height: 28px;
+    border: 1px solid var(--muted);
+    text-align: center;
+    line-height: 26px;
+    font-weight: bold;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .option.selected .option-letter, .option.correct .option-letter { border-color: var(--accent); color: var(--accent); }
+  .option.wrong .option-letter { border-color: var(--danger); color: var(--danger); }
+
+  /* Numeric input */
+  .numeric-wrap { display: flex; gap: 12px; align-items: center; }
+  .numeric-input {
+    background: var(--bg2);
+    border: 1px solid var(--accent2);
+    color: var(--accent);
+    padding: 14px 18px;
+    font-family: inherit;
+    font-size: 24px;
+    width: 200px;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+  .numeric-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 12px var(--accent); }
+  .numeric-units { color: var(--muted); font-size: 14px; }
+
+  /* Match */
+  .match-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .match-col-label {
+    color: var(--accent2);
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .match-item {
+    background: var(--bg2);
+    border: 1px solid var(--locked);
+    padding: 12px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: all 0.15s;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 14px;
+  }
+  .match-item:hover { border-color: var(--accent2); }
+  .match-item.selected { border-color: var(--accent); background: rgba(0,255,159,0.1); }
+  .match-item.paired { opacity: 0.5; cursor: default; border-color: var(--accent); background: rgba(0,255,159,0.05); }
+  .match-pair-tag { display: inline-block; color: var(--accent); margin-right: 6px; font-weight: bold; }
+
+  /* Feedback */
+  .feedback {
+    margin-top: 20px;
+    padding: 16px;
+    border-left: 3px solid;
+    background: var(--bg2);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .feedback.correct { border-color: var(--accent); }
+  .feedback.wrong { border-color: var(--danger); }
+  .feedback-title { font-weight: bold; margin-bottom: 6px; font-family: inherit; letter-spacing: 2px; }
+  .feedback.correct .feedback-title { color: var(--accent); }
+  .feedback.wrong .feedback-title { color: var(--danger); }
+  .feedback-explain { color: var(--muted); }
+
+  .q-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
+
+  /* Results */
+  .result-screen { text-align: center; padding: 40px 0; }
+  .result-headline { font-size: 32px; color: var(--accent); letter-spacing: 4px; margin-bottom: 12px; }
+  .result-headline.fail { color: var(--danger); }
+  .result-room { color: var(--muted); margin-bottom: 32px; }
+  .result-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  .result-stat { }
+  .result-stat-value { font-size: 36px; color: var(--accent); font-weight: bold; }
+  .result-stat-label { font-size: 11px; color: var(--muted); letter-spacing: 2px; margin-top: 4px; }
+  .result-stars { font-size: 48px; color: var(--warn); letter-spacing: 8px; margin: 20px 0; }
+
+  /* Boss screen accent */
+  .boss-mode .question-card { border-color: var(--danger); box-shadow: 0 0 24px rgba(255,56,96,0.2); }
+  .boss-mode .q-type-badge { border-color: var(--danger); color: var(--danger); }
+  .boss-timer { color: var(--danger); font-size: 24px; font-weight: bold; letter-spacing: 2px; }
+  .boss-timer.critical { animation: flicker 0.4s infinite; }
+
+  /* Misc */
+  .center { text-align: center; }
+  .mt-lg { margin-top: 32px; }
+  .ascii { font-family: monospace; white-space: pre; line-height: 1.1; color: var(--accent); opacity: 0.5; font-size: 11px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ============================================================
+// QUESTION BANK — DCoCP (Dynamics and Control of Chemical Processes)
+// Course: Prof. Matteo Pelucchi, Politecnico di Milano, AY 2025/26
+// Based on Stephanopoulos "Chemical Process Control" + course calendar
+// ============================================================
+
+const ROOMS = [
+  {
+    id: 'L1', date: 'WK1', name: 'Products & Productions', questions: [
+      { type: 'mcq', prompt: 'In the chemical industry classification, BASE CHEMICALS (commodities) are characterized by:',
+        options: ['Short life cycle, controlled by market demand', 'Long life cycle, first step in producing many other chemicals; focus is on process development', 'Highly specialized, customer-tailored formulations', 'Small volumes, high margins, fast iteration'],
+        correct: 1, explain: 'Commodities = methanol, ethylene, ammonia, etc. Sold by the kt, decade-stable demand. R&D focus is on shaving cents/kg via process improvement, not on new molecules.' },
+      { type: 'mcq', prompt: 'Which classification is BEST for a custom pigment used in a specific batch of automotive paint?',
+        options: ['Base chemical (commodity)', 'Specialty chemical', 'Fine chemical', 'Pseudocommodity'],
+        correct: 1, explain: 'Specialties: short life cycle, market-driven, customer-specific. Fine chemicals = pharma intermediates, also low volume but more lab-driven.' },
+      { type: 'match', prompt: 'Match each product category to its typical example.',
+        pairs: [
+          { left: 'Base chemical (commodity)', right: 'Methanol, ethylene, ammonia' },
+          { left: 'Specialty chemical', right: 'Custom dye for a paint batch' },
+          { left: 'Pseudocommodity', right: 'Polyethylene, polyester fibers' },
+          { left: 'Fine chemical', right: 'Pharmaceutical intermediate' }
+        ], explain: 'Volume vs value vs lifecycle defines the category. Commodity = high-vol/low-margin/stable; fine = low-vol/high-margin/short-lived.' },
+      { type: 'mcq', prompt: 'A BIOREFINERY is distinguished from a petrochemical refinery by:',
+        options: ['Use of biomass feedstocks (palm oil, used cooking oil, lignocellulosic, etc.) rather than crude oil', 'Producing only fuels', 'Operating at lower temperatures', 'Using only biological catalysts'],
+        correct: 0, explain: 'Biorefinery: oils/fats → FAME, HVO; sugars → bioethanol; lignocellulose → 2G biofuels and platform chemicals. Same value-chain logic, different carbon source.' },
+      { type: 'error', prompt: 'One of these statements is FALSE.',
+        statements: [
+          'The Inorganic Chemical Industry covers products from minerals, air, and water (sulfuric acid, ammonia, nitric acid)',
+          'Refinery products include gasoline and diesel fuels',
+          'Petrochemical = Organic Chemical Industry, starting from oil/gas/coal',
+          'Specialty chemicals are produced in larger volumes than commodities'
+        ], wrongIndex: 3, explain: 'Backwards. Commodities = mass tonnage; specialties = small batches, high margin. Volume hierarchy: commodity > pseudocommodity > specialty > fine.' }
+    ]
+  },
+  {
+    id: 'L2', date: 'WK2', name: 'Raw Materials', questions: [
+      { type: 'mcq', prompt: 'Natural gas described as "wet gas" contains:',
+        options: ['Liquid water at the wellhead', 'C2 and C3 paraffins in addition to methane', 'Sulfur compounds requiring sweetening', 'CO2 at >10%'],
+        correct: 1, explain: '"Dry" = essentially pure CH4. "Wet" = contains ethane, propane, sometimes butane — heavier hydrocarbons. NGL recovery splits them out for petrochemical use.' },
+      { type: 'mcq', prompt: 'The "sweetening" step in natural gas treatment refers to:',
+        options: ['Removing water (dehydration)', 'Removing H2S (and CO2) using amines', 'Adding odorant', 'Removing C2+ NGLs'],
+        correct: 1, explain: 'Sweetening = sulfur removal. Most common: amine absorption (MDEA, MEA). H2S must be reduced to <0.25 ppm before steam reforming or it will poison downstream catalysts.' },
+      { type: 'mcq', prompt: 'SYNGAS is most commonly produced industrially from:',
+        options: ['Coal gasification', 'Steam reforming of natural gas', 'Biomass pyrolysis', 'Water electrolysis'],
+        correct: 1, explain: 'CH4 + H2O ⇌ CO + 3H2 (endothermic, ~850°C, Ni catalyst). ~75% of world methanol comes via this route. Coal gasification is regionally important (China).' },
+      { type: 'match', prompt: 'Match each feedstock to its primary downstream product.',
+        pairs: [
+          { left: 'Triglycerides (oils, fats)', right: 'FAME / HVO biodiesel' },
+          { left: 'Syngas (CO + H2)', right: 'Methanol' },
+          { left: 'Naphtha', right: 'Light olefins via steam cracking' },
+          { left: 'CO2 + H2', right: 'Power-to-X fuels / methanol' }
+        ], explain: 'Feedstock + chemistry → product. Increasingly, CO2 is being treated as a feedstock rather than waste, though reactivity and energy content limit its appeal.' },
+      { type: 'mcq', prompt: 'The principal challenges of using CO2 as a chemical feedstock are:',
+        options: ['It is too rare in the atmosphere', 'Poor reactivity and low energy content (need H2 + energy input)', 'It is too expensive to purify', 'It freezes at room temperature'],
+        correct: 1, explain: 'CO2 is the lowest-energy carbon form. Any useful product requires reduction → needs H2 (ideally from renewable electrolysis) and energy input. The economics are the bottleneck.' }
+    ]
+  },
+  {
+    id: 'L3', date: 'WK3', name: 'Process Schemes & Yield', questions: [
+      { type: 'mcq', prompt: 'In a chemical process: CONVERSION = ?',
+        options: ['(moles product formed)/(moles reactant fed)', '(moles reactant consumed)/(moles reactant fed)', '(moles product formed)/(moles reactant consumed)', '(moles desired product)/(moles total products)'],
+        correct: 1, explain: 'Conversion X = consumed/fed. SELECTIVITY = product/consumed. YIELD = product/fed = X × S. Get these three confused and the whole exercise unravels.' },
+      { type: 'mcq', prompt: 'SELECTIVITY toward the desired product is defined as:',
+        options: ['(moles desired product) / (moles reactant fed)', '(moles desired product) / (moles reactant consumed)', '(moles reactant consumed) / (moles fed)', '(moles total products) / (moles reactant fed)'],
+        correct: 1, explain: 'Selectivity tells you "of what reacted, how much went the way I wanted." Often the single most important number in industrial process design.' },
+      { type: 'numeric', prompt: 'A reactor: feed 100 mol A; 80 mol A consumed; 60 mol of desired product P formed. Compute the yield (P/fed) as a percentage.',
+        answer: 60, tolerance: 0.5, units: '%',
+        explain: 'Yield = (moles P formed)/(moles A fed) = 60/100 = 60%. Note: X = 80%, S = 60/80 = 75%. Yield = X·S = 0.80·0.75 = 0.60.' },
+      { type: 'mcq', prompt: 'Why use RECYCLE streams in a chemical process?',
+        options: ['To reduce capital cost only', 'To increase overall yield when single-pass conversion is low and the reactant is valuable', 'To dispose of unwanted products', 'They have no thermodynamic justification'],
+        correct: 1, explain: 'Single-pass conversion is often <50% (kinetics, equilibrium, selectivity). Recycle the unreacted reactant → overall conversion → near-100%. Tradeoff: bigger separation duty and purge to bleed inerts.' },
+      { type: 'match', prompt: 'Match each diagram type to its level of detail.',
+        pairs: [
+          { left: 'Block Flow Diagram', right: 'Major process steps as labeled blocks' },
+          { left: 'Process Flow Diagram (PFD)', right: 'Equipment with main streams, T, P, flows' },
+          { left: 'P&ID', right: 'Every line, valve, instrument, tag' },
+          { left: 'Material Balance Sheet', right: 'Stream-by-stream component flows' }
+        ], explain: 'Detail escalates: BFD → PFD → P&ID. The PFD is where the engineering judgment lives; the P&ID is the construction document.' }
+    ]
+  },
+  {
+    id: 'L4', date: 'WK4', name: 'Catalysis & Catalysts', questions: [
+      { type: 'mcq', prompt: 'A CATALYST is a substance that:',
+        options: ['Shifts the chemical equilibrium toward products', 'Increases the rate of reaching equilibrium without being permanently consumed', 'Lowers ΔG of reaction', 'Increases the heat of reaction'],
+        correct: 1, explain: 'Catalysts open a lower-Ea pathway — kinetics only. They do NOT shift equilibrium (Keq is a state function of T) and they emerge chemically unchanged (in principle).' },
+      { type: 'mcq', prompt: 'Compared to HOMOGENEOUS catalysis, HETEROGENEOUS catalysis offers:',
+        options: ['Easier catalyst/product separation and operation at higher T', 'Better mass transfer at all conditions', 'Higher selectivity always', 'Smaller reactor volume'],
+        correct: 0, explain: 'Het advantages: easy filtration, high-T tolerance, non-corrosive solids. Drawbacks: only surface is active, prone to poisoning, mass-transfer limitations, selectivity often worse than homog.' },
+      { type: 'match', prompt: 'Match each catalyst-deactivation mode to its cause.',
+        pairs: [
+          { left: 'Poisoning', right: 'Strong adsorption of impurity (S, Cl) on active sites' },
+          { left: 'Coking (Fouling)', right: 'Carbonaceous deposits blocking pores and sites' },
+          { left: 'Sintering', right: 'Crystallite growth → loss of surface area at high T' },
+          { left: 'Mechanical degradation', right: 'Attrition or abrasion of catalyst particles' }
+        ], explain: 'Four classic deactivation modes (Bartholomew). Coking can often be regenerated (burn it off); sintering is usually irreversible.' },
+      { type: 'mcq', prompt: 'ZEOLITES owe their industrial importance largely to:',
+        options: ['Catalytic activity in liquid phase only', 'Crystalline microporous structure with size-selective channels and Brønsted acid sites', 'Their low cost', 'Tolerance of all poisons'],
+        correct: 1, explain: 'Shape selectivity (reactant, product, transition-state) + tunable acidity + thermal stability = the foundation of FCC, alkylation, isomerization, and modern EB processes.' },
+      { type: 'error', prompt: 'One statement is FALSE.',
+        statements: [
+          'Coking is more easily regenerated than sintering',
+          'Sintering is essentially irreversible at industrial scale',
+          'Catalyst poisons (S, Cl) bind irreversibly to active sites in many systems',
+          'A catalyst shifts the equilibrium constant Keq toward the products'
+        ], wrongIndex: 3, explain: 'Equilibrium is governed by ΔG°, which depends ONLY on T and pressure (for gases). Catalysts cannot violate thermodynamics — they only speed up the approach.' }
+    ]
+  },
+  {
+    id: 'L5', date: 'WK5', name: 'Methanol Synthesis', questions: [
+      { type: 'mcq', prompt: 'The main methanol synthesis reaction CO + 2H2 ⇌ CH3OH is:',
+        options: ['Endothermic and proceeds with mole increase', 'Exothermic (ΔH° ≈ −90.8 kJ/mol) and proceeds with mole decrease', 'Thermoneutral', 'Slightly endothermic, mole-neutral'],
+        correct: 1, explain: 'Strongly exothermic, 3 moles → 1 mole. Le Châtelier: favored by low T and high P. The whole reactor design (multistage adiabatic, multitubular) is built around that constraint.' },
+      { type: 'mcq', prompt: 'The modern (ICI-type) methanol catalyst is:',
+        options: ['Fe-K2O', 'Cu/ZnO/Al2O3 (CZA)', 'Pt/Al2O3', 'V2O5/TiO2'],
+        correct: 1, explain: 'Copper on zinc oxide on alumina, low-pressure process (200-250°C, 50-100 bar). Replaced the harsh BASF ZnO/Cr2O3 (300-400 bar, 400°C) catalyst.' },
+      { type: 'numeric', prompt: 'For the main reaction CO + 2H2 → CH3OH, the stoichiometric H2/CO ratio in the feed should be approximately:',
+        answer: 2, tolerance: 0.1, units: ': 1',
+        explain: 'Stoichiometry demands H2:CO = 2:1. In practice, slight excess H2 is used to drive equilibrium. The CO2 + 3H2 side reaction shifts the ideal stoichiometric number ((H2 − CO2)/(CO + CO2)) ≈ 2.' },
+      { type: 'mcq', prompt: 'Why is methanol synthesis run at HIGH pressure and LOW temperature?',
+        options: ['Le Châtelier: exothermic + mole-decreasing → P↑ and T↓ both shift equilibrium toward products', 'High P/low T helps coke removal', 'Required by safety codes', 'To lower H2 cost'],
+        correct: 0, explain: 'Exothermic → cooler is better thermodynamically. Mole-decreasing → higher P is better. Lower-bound on T comes from kinetics (need the Cu catalyst to actually work, ~200°C).' },
+      { type: 'match', prompt: 'Match each operating choice in a methanol plant to its purpose.',
+        pairs: [
+          { left: 'Desulfurization to <0.25 ppm H2S', right: 'Protect Ni reformer and Cu methanol catalysts' },
+          { left: 'Multistage adiabatic with intercooling', right: 'Approximate optimal decreasing-T profile for exothermic equilibrium' },
+          { left: 'Recycle unreacted syngas', right: 'Overcome single-pass conversion limits' },
+          { left: 'Purge stream', right: 'Bleed inerts (N2, CH4) to prevent accumulation' }
+        ], explain: 'Every methanol plant has these four ingredients. Removing any one destroys the economics.' }
+    ]
+  },
+  {
+    id: 'L6', date: 'WK6', name: 'Refinery & Hydrotreating', questions: [
+      { type: 'mcq', prompt: 'HYDROTREATING (HDS) of fuels primarily aims to:',
+        options: ['Crack heavy hydrocarbons to lighter ones', 'Saturate olefins for fuel stability', 'Remove sulfur as H2S using H2 over a CoMo/NiMo catalyst', 'Increase the octane number'],
+        correct: 2, explain: 'HDS: R-S + H2 → R-H + H2S. CoMo/NiMo on Al2O3, 320-400°C, 20-100 bar H2. Also removes N (HDN), metals, and saturates some olefins/aromatics.' },
+      { type: 'mcq', prompt: 'The main hydrogen source for refinery hydrotreating units is typically:',
+        options: ['Electrolysis of water', 'Steam methane reforming (SMR), often supplemented by catalytic reforming H2', 'Coal gasification only', 'Recovered from the atmosphere'],
+        correct: 1, explain: 'Most refinery H2 comes from SMR + naphtha catalytic reforming (which co-produces H2 while making BTX/gasoline). H2 economics are central to deep desulfurization.' },
+      { type: 'mcq', prompt: 'BREF (BAT Reference Document) is:',
+        options: ['A European regulation document defining Best Available Techniques for industrial sectors', 'A safety standard for vessel design', 'A catalyst trade name', 'An ISO accounting standard'],
+        correct: 0, explain: 'BREF = Best Available Techniques Reference. EU IED implementation — sector-specific (refining, LVOC, etc.) BAT-AELs define environmental performance targets.' },
+      { type: 'mcq', prompt: 'CATALYTIC REFORMING in a refinery is used to:',
+        options: ['Crack vacuum gasoil', 'Convert naphtha into aromatics and isoparaffins (high-octane gasoline + BTX + H2)', 'Hydrotreat diesel', 'Produce methanol'],
+        correct: 1, explain: 'Pt/Re or Pt/Sn on chlorided alumina. Dehydrogenation, isomerization, dehydrocyclization. Output: high-octane reformate + BTX feedstock + bonus H2 for hydrotreating.' },
+      { type: 'error', prompt: 'One is FALSE.',
+        statements: [
+          'HDS reduces SOx emissions when the fuel is burned downstream',
+          'CoMo/NiMo HDS catalysts are sulfided (active form contains MoS2)',
+          'Increasing pressure tends to enhance HDS activity',
+          'Hydrotreating is endothermic so reactors must be heated continuously'
+        ], wrongIndex: 3, explain: 'HDS reactions are EXOTHERMIC (hydrogen addition + bond breaking with C-H/S-H formation). Quench streams between catalyst beds manage the temperature rise.' }
+    ]
+  },
+  {
+    id: 'L7', date: 'WK7', name: 'Steam Cracking', questions: [
+      { type: 'mcq', prompt: 'The main industrial purpose of STEAM CRACKING is to produce:',
+        options: ['Aromatics (BTX)', 'Light olefins, primarily ethylene and propylene', 'Synthesis gas', 'Methanol'],
+        correct: 1, explain: 'Steam cracking is THE source of ethylene (>200 Mt/y world). Co-products: propylene, C4s, pyrolysis gasoline (aromatics), H2. Feeds: ethane (US shale) to naphtha (Europe).' },
+      { type: 'mcq', prompt: 'STEAM is added to the cracker feed primarily to:',
+        options: ['Heat the hydrocarbons by condensation', 'Reduce the hydrocarbon partial pressure (favors olefins) and reduce coking', 'Increase residence time', 'Convert paraffins to alcohols'],
+        correct: 1, explain: 'Lower partial pressure shifts cracking equilibria toward olefins. Steam also dilutes coke precursors and partially gasifies coke (C + H2O → CO + H2). NO catalyst — purely thermal.' },
+      { type: 'mcq', prompt: 'Steam cracking is performed at:',
+        options: ['Low temperature, long residence time', 'Very high temperature (800-900°C), millisecond-range residence time, fast quench', 'Moderate T with a Ni catalyst', 'Low P, room temperature'],
+        correct: 1, explain: 'Short contact (~0.1-0.5 s) at >800°C + immediate quench (transfer-line exchangers) freezes the kinetic distribution before secondary reactions destroy the olefins.' },
+      { type: 'numeric', prompt: 'Ethane cracker single-pass ethane conversion is typically around what %? (give a representative figure)',
+        answer: 65, tolerance: 10, units: '%',
+        explain: 'Ethane cracker conversions are typically 55-70% per pass; selectivity to ethylene is ~80%. Unreacted ethane is recovered and recycled to extinction.' },
+      { type: 'error', prompt: 'One statement is FALSE.',
+        statements: [
+          'Steam cracking is non-catalytic and thermal',
+          'Lighter feeds (ethane) give higher ethylene selectivity than naphtha',
+          'A transfer-line exchanger quenches the product gas rapidly to preserve olefins',
+          'Steam cracking is exothermic and requires no fired heater'
+        ], wrongIndex: 3, explain: 'Strongly ENDOTHERMIC. The radiant section of the furnace supplies heat through tubes; convection section preheats feed/steam. Energy intensity is the defining cost.' }
+    ]
+  },
+  {
+    id: 'L8', date: 'WK8', name: 'Aromatics Separation (BTX)', questions: [
+      { type: 'mcq', prompt: 'BTX stands for:',
+        options: ['Benzene, Toluene, Xylene', 'Butadiene, Toluene, p-Xylene', 'Benzene, Toluene, p-Xylene only', 'Butane, Toluene, Xylene'],
+        correct: 0, explain: 'BTX = benzene + toluene + (mixed) xylenes (o-, m-, p-). The classic aromatic platform from catalytic reforming or pygas (steam cracker by-product).' },
+      { type: 'mcq', prompt: 'Why is EXTRACTIVE DISTILLATION often used to separate aromatics from non-aromatic paraffins of similar boiling point?',
+        options: ['It is cheaper than a normal column', 'A polar solvent (sulfolane, NMP) modifies relative volatility, breaking the close-boiling tie', 'It requires lower temperature', 'It exploits density differences only'],
+        correct: 1, explain: 'C6 paraffins and benzene boil within a few degrees — ordinary distillation fails. The solvent (sulfolane is the classic) preferentially associates with aromatics, making them less volatile so paraffins go overhead.' },
+      { type: 'mcq', prompt: 'Para-xylene is most commonly separated from its isomers (m-, o-, ethylbenzene) by:',
+        options: ['Ordinary distillation', 'Adsorption (e.g., UOP Parex on zeolite) or crystallization', 'Steam cracking', 'Catalytic reforming'],
+        correct: 1, explain: 'p-X, m-X, o-X have boiling points within <5°C — distillation is uneconomic. Parex: simulated moving bed adsorption on zeolite. Crystallization: exploits the higher freezing point of p-xylene.' },
+      { type: 'match', prompt: 'Match each aromatics separation to its typical method.',
+        pairs: [
+          { left: 'Aromatics vs paraffins (similar BP)', right: 'Extractive distillation (sulfolane)' },
+          { left: 'Benzene from toluene', right: 'Ordinary distillation' },
+          { left: 'p-Xylene from m/o-xylene', right: 'Adsorption or crystallization' },
+          { left: 'Toluene to benzene', right: 'Hydrodealkylation or transalkylation' }
+        ], explain: 'Pick the separation based on what the BPs (and freezing points) allow. Distillation first, then exotic methods only where physics forces you.' },
+      { type: 'mcq', prompt: 'TRANSALKYLATION is used to:',
+        options: ['Crack aromatics to olefins', 'Redistribute alkyl groups (e.g., toluene + heavy aromatics ⇌ benzene + xylenes)', 'Hydrogenate aromatics', 'Remove sulfur'],
+        correct: 1, explain: 'Equilibrium reaction over zeolite. Used to upgrade low-value toluene + C9+ aromatics into more valuable benzene + xylenes, matching demand to BTX cut.' }
+    ]
+  },
+  {
+    id: 'L9', date: 'WK9', name: 'Acetic Acid (Carbonylation)', questions: [
+      { type: 'mcq', prompt: 'Modern acetic acid production proceeds primarily via:',
+        options: ['Fermentation of ethanol', 'Catalytic oxidation of acetaldehyde', 'Carbonylation of methanol: CH3OH + CO → CH3COOH', 'Hydration of acetylene'],
+        correct: 2, explain: '~70% of global acetic acid from MeOH + CO. The Monsanto (Rh, 1970) and Cativa (Ir, BP 1996) processes dominate. Both use methyl iodide as a promoter.' },
+      { type: 'mcq', prompt: 'The Cativa (BP) and Monsanto processes for acetic acid differ primarily in:',
+        options: ['Feedstock (CO source)', 'Active metal — Cativa uses Ir, Monsanto used Rh', 'Pressure level', 'Use of solvent'],
+        correct: 1, explain: 'Cativa: Ir-based, faster, higher selectivity at lower water levels — economic improvement. Both share the methyl iodide promoter and similar reaction mechanism.' },
+      { type: 'mcq', prompt: 'The role of methyl iodide (CH3I) in methanol carbonylation is to:',
+        options: ['Solubilize the catalyst', 'Convert MeOH into a more reactive methyl-source via in-situ formation of CH3-M intermediates', 'Provide hydrogen', 'Inhibit the reaction'],
+        correct: 1, explain: 'Iodide promoter cycle: MeOH + HI → CH3I + H2O. Then CH3I oxidatively adds to the Rh/Ir center, accelerating the rate-limiting methyl-migration step.' },
+      { type: 'mcq', prompt: 'Carbon monoxide for the acetic acid process is most commonly sourced from:',
+        options: ['Atmospheric CO', 'Syngas (from steam reforming or partial oxidation), separated from H2', 'CO2 reduction', 'Coal combustion'],
+        correct: 1, explain: 'Plants typically integrate with a syngas unit. CO is purified (cryogenic or PSA) to high purity since sulfur and H2 are catalyst poisons in low concentrations.' },
+      { type: 'error', prompt: 'One is FALSE.',
+        statements: [
+          'Carbonylation reactions are atom-economical (all carbon from methanol + CO goes into product)',
+          'Cativa allows operation at lower water concentration than Monsanto',
+          'Water is needed mechanistically but excess water decreases productivity',
+          'Acetic acid is produced today mostly by aerobic fermentation of ethanol'
+        ], wrongIndex: 3, explain: 'Fermentation (vinegar route) accounts for only ~10% of acetic acid, mostly food-grade. The bulk is synthetic via carbonylation.' }
+    ]
+  },
+  {
+    id: 'L10', date: 'WK10', name: 'Ethylbenzene & Styrene', questions: [
+      { type: 'mcq', prompt: 'Styrene is industrially produced from:',
+        options: ['Direct oxidation of benzene', 'Two steps: benzene + ethylene → ethylbenzene (EB), then EB dehydrogenation', 'Cumene hydroperoxide route', 'Steam cracking of toluene'],
+        correct: 1, explain: '>95% of styrene capacity: (1) alkylation B + E → EB, (2) catalytic dehydrogenation EB → S + H2 at ~600°C. Co-product H2 has fuel value.' },
+      { type: 'mcq', prompt: 'Modern ethylbenzene processes (ExxonMobil EBMax, Lummus, etc.) use ZEOLITE catalysts (Y-, BETA-, MCM-22, ZSM-5) instead of the older Friedel-Crafts AlCl3 because:',
+        options: ['Zeolites are cheaper', 'No aqueous waste, no corrosion, better selectivity (less polyalkylation), and easy regeneration by burning coke', 'AlCl3 is now illegal in the EU', 'Zeolites give faster kinetics only'],
+        correct: 1, explain: 'AlCl3 chemistry generates acidic wastewater, corrodes equipment, and leaves catalyst residues. Zeolites: clean, recyclable, shape-selective. Coke regenerated by controlled air burn.' },
+      { type: 'mcq', prompt: 'The EB → Styrene + H2 dehydrogenation step is:',
+        options: ['Exothermic, ΔG° = 0 around 400°C', 'Endothermic, ΔG° = 0 around 700°C — unfavorable equilibrium needs high T and low P', 'Mole-neutral', 'Slightly exothermic at all temperatures'],
+        correct: 1, explain: 'Strongly endothermic (~125 kJ/mol). Mole-increasing → low P helps. Industrially: 550-620°C, sub-atmospheric or with steam dilution, multistage adiabatic with interstage heating.' },
+      { type: 'mcq', prompt: 'In the styrene reactor, the role of STEAM dilution is to (multiple): lower hydrocarbon partial pressure (favors product), provide heat, and:',
+        options: ['Cool the catalyst', 'Gasify coke deposits (C + H2O → CO + H2) keeping the Fe2O3-K2CO3 catalyst clean', 'Provide hydrogen via WGS', 'Suppress styrene polymerization'],
+        correct: 1, explain: 'Three roles for steam: (1) lower PEB → shift equilibrium, (2) heat carrier, (3) coke gasification. The K2CO3 promoter catalyzes the coke gasification reaction.' },
+      { type: 'numeric', prompt: 'Typical SINGLE-PASS EB conversion in a styrene reactor (equilibrium ≈ 80%) is around what %? (give a representative number)',
+        answer: 60, tolerance: 15, units: '%',
+        explain: 'Industrial practice: 40-70% per pass with ~90% selectivity to styrene. Unreacted EB recycled. Inhibitors injected in the distillation train (vacuum) to prevent styrene polymerization.' }
+    ]
+  },
+  {
+    id: 'L11', date: 'WK11', name: 'Formaldehyde', questions: [
+      { type: 'mcq', prompt: 'The overall stoichiometry of industrial formaldehyde production is:',
+        options: ['CH3OH + H2O → CH2O + 2H2', 'CH3OH + ½O2 → CH2O + H2O', 'CH4 + O2 → CH2O + H2O', '2 CH3OH → CH2O + CH3OH·H2O'],
+        correct: 1, explain: 'Both routes (silver oxidative dehydrogenation AND Formox direct oxidation) deliver this net stoichiometry, though by different mechanisms.' },
+      { type: 'mcq', prompt: 'The SILVER process for formaldehyde operates:',
+        options: ['Below the LEL with excess air, at 300-400°C', 'Above the UEL with excess methanol (defect of O2), at 600-720°C', 'At equilibrium-controlled conditions', 'Without catalyst'],
+        correct: 1, explain: 'Silver runs RICH (above UEL, methanol-excess) at high T. Mechanism is dehydrogenation (CH3OH → CH2O + H2) followed by H2 combustion.' },
+      { type: 'mcq', prompt: 'The Formox (Fe-Mo oxide) process for formaldehyde operates:',
+        options: ['Below the LEL (excess air, methanol-lean), at 300-400°C', 'Above the UEL at 700°C', 'In the explosive range with safety valves', 'In pure O2'],
+        correct: 0, explain: 'Formox runs LEAN (below LEL, methanol-dilute) at lower T. Multitubular reactor with molten-salt cooling (Dowtherm). Better selectivity and lower fire risk than silver.' },
+      { type: 'mcq', prompt: 'The Formox catalyst (Fe2O3-MoO3) operates by a MARS-VAN KREVELEN mechanism, which means:',
+        options: ['Reactants combine in the gas phase', 'Catalyst lattice oxygen is consumed (CH3OH oxidized by O²⁻) then re-oxidized by gas-phase O2', 'A radical chain in the gas phase', 'Photochemical activation'],
+        correct: 1, explain: 'M–vK: redox cycle of the metal oxide. MoO3 is the active phase: Mo⁶⁺ reduced to Mo⁴⁺ by methanol, then re-oxidized by O2. The O²⁻ is the active oxygen species.' },
+      { type: 'error', prompt: 'One statement is FALSE.',
+        statements: [
+          'Formaldehyde is the most important industrial aldehyde, mainly used in resins',
+          'Methanol-air mixtures are flammable between roughly 6.7% and 36% v/v',
+          'The silver process operates with excess methanol (rich)',
+          'Both silver and Formox routes use a Brønsted-acid-only mechanism'
+        ], wrongIndex: 3, explain: 'Silver: oxidative dehydrogenation + H2 combustion. Formox: Mars-Van Krevelen redox. Neither is Brønsted-acid catalysis — both are oxide redox.' }
+    ]
+  },
+  {
+    id: 'L12', date: 'WK12', name: 'Phenolic Resins', questions: [
+      { type: 'mcq', prompt: 'Phenolic resins (Bakelite-type) are formed by condensation of:',
+        options: ['Phenol + ethylene', 'Phenol + formaldehyde, with water elimination', 'Phenol + acetic acid', 'Phenol + cumene hydroperoxide'],
+        correct: 1, explain: 'Phenol + CH2O under acid or base catalysis → methylol-phenol → linked via -CH2- bridges. The classic first synthetic thermoset (Baekeland, 1907).' },
+      { type: 'mcq', prompt: 'NOVOLAC and RESOL phenolic resins differ in:',
+        options: ['Color only', 'Catalysis: novolac uses acid + excess phenol (no reactive groups left); resol uses base + excess formaldehyde (still reactive)', 'Phenol substituent', 'Temperature of synthesis'],
+        correct: 1, explain: 'Novolac: acid-catalyzed, P:F > 1 → thermoplastic, needs a hardener (hexa) for curing. Resol: base-catalyzed, P:F < 1 → thermoset, self-curing on heating.' },
+      { type: 'mcq', prompt: 'A THERMOSET (cured phenolic resin) versus a THERMOPLASTIC:',
+        options: ['Both can be melted and reshaped', 'Thermoset has a 3D crosslinked network that cannot be remelted; thermoplastic flows on heating', 'Thermoset is always softer', 'No structural difference'],
+        correct: 1, explain: 'Crosslinks vs linear chains. Bakelite, epoxy, vulcanized rubber, urea-formaldehyde — all thermosets. Once cured, only mechanical recycling.' },
+      { type: 'mcq', prompt: 'A major industrial application of phenolic resins is:',
+        options: ['Soft drinks bottles (PET)', 'Wood-bonding adhesives (plywood, OSB) and thermal/electrical insulators', 'Synthetic fibers (nylon)', 'Liquid fuels'],
+        correct: 1, explain: 'Phenolics: plywood/OSB binders, foundry sand binders, brake linings, electrical laminates, refractory bonds. Strength, heat resistance, dimensional stability after cure.' },
+      { type: 'error', prompt: 'One is FALSE.',
+        statements: [
+          'Bakelite was the first fully synthetic plastic (1907)',
+          'Novolac resins require a hardener (e.g., hexamine) for the final cure',
+          'Resol resins can self-cure on heating without an external hardener',
+          'All phenolic resins are thermoplastics that can be remelted'
+        ], wrongIndex: 3, explain: 'Once cured, phenolics are THERMOSETS — crosslinked and infusible. The uncured liquid is moldable; the cured part is not.' }
+    ]
+  },
+  {
+    id: 'L13', date: 'WK13', name: 'Maleic & Phthalic Anhydride', questions: [
+      { type: 'mcq', prompt: 'Modern industrial MALEIC ANHYDRIDE (MA) is produced primarily from:',
+        options: ['Benzene oxidation (legacy)', 'n-Butane oxidation over a V-P-O (vanadium phosphorus oxide) catalyst', 'Naphtha cracking', 'Maleic acid dehydration'],
+        correct: 1, explain: 'n-C4H10 + 3.5 O2 → C4H2O3 + 4 H2O. V-P-O catalyst, fluidized or multitubular fixed bed. Replaced benzene route for both cost and benzene-emission reasons.' },
+      { type: 'mcq', prompt: 'PHTHALIC ANHYDRIDE (PA) is produced industrially from:',
+        options: ['Naphthalene only', 'Mainly o-xylene oxidation over V2O5/TiO2 (some naphthalene still used)', 'Benzene oxidation', 'Cumene oxidation'],
+        correct: 1, explain: 'o-xylene + 3 O2 → phthalic anhydride + 3 H2O. V2O5 on anatase TiO2 carrier, multitubular reactor with molten salt cooling. Highly exothermic, near hot-spot conditions.' },
+      { type: 'mcq', prompt: 'The reactor of choice for both MA and PA oxidations is a:',
+        options: ['Single adiabatic packed bed', 'Multitubular reactor with intense heat removal via molten salt or boiling water', 'Slurry CSTR', 'Trickle bed'],
+        correct: 1, explain: 'Both oxidations are violently exothermic. Multitubular with cooled tubes (~1000s) is the only way to dispose of the heat fast enough and avoid runaway / over-oxidation to CO2.' },
+      { type: 'mcq', prompt: 'PHTHALIC ANHYDRIDE is mainly used as a precursor for:',
+        options: ['Polyethylene', 'Plasticizers (phthalate esters), alkyd resins, polyester resins', 'Synthetic gasoline', 'Detergents'],
+        correct: 1, explain: 'Phthalate plasticizers (e.g., DOP/DEHP for flexible PVC), alkyd paints, unsaturated polyester resins for composites. Phthalate environmental concerns drove growth in non-phthalate alternatives.' },
+      { type: 'mcq', prompt: 'MALEIC ANHYDRIDE\'s biggest downstream application is:',
+        options: ['Unsaturated polyester resins (UPR) for composites/coatings, and 1,4-butanediol/THF', 'Direct fuel use', 'PVC plasticizer (only)', 'Detergents'],
+        correct: 0, explain: 'UPR is the #1 outlet (fiberglass composites, marine resins). Other major uses: butanediol/GBL/THF via hydrogenation, fumaric/maleic acid, copolymers.' }
+    ]
+  },
+  {
+    id: 'L14', date: 'WK14', name: 'Vinyl Chloride Monomer (VCM)', questions: [
+      { type: 'mcq', prompt: 'The MODERN balanced VCM process integrates three steps:',
+        options: ['Direct chlorination of ethylene → EDC; oxychlorination of ethylene → EDC; thermal cracking of EDC → VCM + HCl (recycled)', 'Acetylene + HCl only', 'Ethane + Cl2 in one step', 'Vinyl alcohol dehydration'],
+        correct: 0, explain: 'The "balanced VCM" process consumes ALL HCl in-house: chlorination + oxychlorination produce EDC; cracking EDC gives VCM + HCl; that HCl feeds the oxychlorination. Net inputs: ethylene + Cl2 + O2.' },
+      { type: 'mcq', prompt: 'Direct chlorination of ethylene (CH2=CH2 + Cl2 → ClCH2CH2Cl, EDC) is performed in:',
+        options: ['Gas phase at 800°C', 'Liquid phase over FeCl3 at 50-70°C, sometimes 100-150°C (HT) — very selective', 'Heterogeneous solid acid', 'Photo-reactor'],
+        correct: 1, explain: 'Electrophilic Cl addition in EDC solvent with FeCl3 catalyst. Highly selective (>99%) and exothermic. HT variant raises T to use the heat for separation duty.' },
+      { type: 'mcq', prompt: 'OXYCHLORINATION (CH2=CH2 + 2 HCl + ½ O2 → ClCH2CH2Cl + H2O) exists in the VCM process specifically to:',
+        options: ['Increase ethylene conversion', 'CONSUME the HCl by-product of EDC cracking, closing the chlorine loop', 'Make pure HCl', 'Replace direct chlorination'],
+        correct: 1, explain: 'Without oxychlorination, the plant either dumps HCl (waste) or sells it (low value). Oxychlorination recycles HCl back into EDC → process self-balances on chlorine.' },
+      { type: 'mcq', prompt: 'The thermal cracking step ClCH2CH2Cl → CH2=CHCl + HCl is:',
+        options: ['Exothermic at low T', 'Endothermic, high-T (~500°C) tubular furnace, partial conversion (~50-60% per pass) with quench and EDC recycle', 'Catalytic at low T', 'Below 100°C'],
+        correct: 1, explain: 'EDC pyrolysis in fired tubes at 480-530°C, ~25-30 bar. Conversion limited to ~55% per pass to control coking and selectivity. Product gases quenched fast; HCl, VCM, unreacted EDC separated.' },
+      { type: 'error', prompt: 'One statement is FALSE.',
+        statements: [
+          'VCM is polymerized to PVC, the basis of pipes, profiles, and flexible plastics',
+          'The balanced VCM process net consumes ethylene + Cl2 + O2 (no net HCl in/out)',
+          'EDC is also a useful solvent for some catalytic systems',
+          'Oxychlorination uses Cl2 as the chlorine source'
+        ], wrongIndex: 3, explain: 'Oxychlorination uses HCl (not Cl2) as the chlorine source — that is its entire reason for existing. The CuCl2/Al2O3 catalyst activates HCl + O2 to chlorinate ethylene.' }
+    ]
+  }
+];
+
+// Boss round: shuffled mix + a few exclusive integrative questions
+const BOSS_EXCLUSIVE = [
+  { type: 'mcq', prompt: 'You are designing a new petrochemical complex starting from natural gas. The CORRECT sequencing of major upstream blocks is:',
+    options: ['Gas → reformer → methanol; separately gas → cracker → ethylene', 'Gas treatment (sweetening, dehydration) → SMR (syngas) → methanol / ammonia / FT', 'Gas → distillation → olefins', 'Gas → oxidation → all products'],
+    correct: 1, explain: 'Always: clean the gas FIRST (sulfur kills downstream catalysts). Then SMR for syngas, which branches to methanol, ammonia, FT-liquids, oxo-alcohols. Olefins come from the steam cracker (different route, naphtha or ethane).' },
+  { type: 'mcq', prompt: 'A reactor for an HIGHLY EXOTHERMIC selective oxidation (e.g., o-xylene → phthalic anhydride) is best implemented as:',
+    options: ['Single adiabatic bed', 'Multitubular with molten salt cooling — thousands of small-diameter tubes for fast heat removal', 'Slurry CSTR at atmospheric pressure', 'Trickle bed gas-liquid'],
+    correct: 1, explain: 'Selective oxidation runs near the runaway boundary. Thousands of narrow tubes immersed in a high-T molten-salt bath give the thermal coupling needed to hold isothermal-ish operation and avoid over-oxidation to CO2.' },
+  { type: 'mcq', prompt: 'Across the value chain, the SAME catalyst principle appears: M–vK lattice-oxygen redox underpins which of these processes?',
+    options: ['Methanol synthesis on Cu/ZnO/Al2O3', 'Styrene production by EB dehydrogenation', 'Phthalic anhydride from o-xylene on V2O5/TiO2 and formaldehyde from methanol on Fe-Mo oxide', 'Acetic acid carbonylation on Cativa (Ir)'],
+    correct: 2, explain: 'Mars-Van Krevelen = lattice-O redox. Classic systems: V2O5/TiO2 (PA), Fe2O3-MoO3 (formaldehyde Formox), V-P-O (maleic anhydride), BiMoO (acrolein). Recognize it and you understand half of selective oxidation.' },
+  { type: 'numeric', prompt: 'A methanol plant with 90% single-pass CO conversion and 97% selectivity to methanol. What is the overall yield (methanol/CO fed, single-pass)? (%)',
+    answer: 87.3, tolerance: 1, units: '%',
+    explain: 'Yield = X × S = 0.90 × 0.97 = 0.873 = 87.3% per pass. With recycle (and adequate purge), overall yield approaches the selectivity itself.' },
+  { type: 'mcq', prompt: 'The "balanced VCM" process is a textbook example of:',
+    options: ['Linear waste-generating process', 'Atom-economy / by-product recycling within a single plant (HCl from cracking → fed to oxychlorination)', 'A catalyst regeneration loop', 'A heat-integration only loop'],
+    correct: 1, explain: 'Process intensification 101: by-product of one reactor becomes the feed of another. Net inputs: only ethylene + Cl2 + O2. No HCl wasted, no HCl bought. The benchmark for circular process design.' }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+const SAVE_KEY = 'organic_chem_challenge_v1';
+let state = loadState();
+
+function defaultState() {
+  return {
+    screen: 'title',
+    lives: 3,
+    score: 0,
+    streak: 0,
+    bestStreak: 0,
+    totalXp: 0,
+    currentRoomId: null,
+    currentQIdx: 0,
+    currentAnswer: null,
+    answered: false,
+    lastCorrect: null,
+    roomResults: [],  // per-question correct/wrong for current room
+    progress: {},     // { L1: { stars: 3, mastery: 100, completed: true }, ... }
+    bossUnlocked: false,
+    bossDone: false,
+    bossTimer: null,
+    bossStartTime: null,
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return defaultState();
+    const saved = JSON.parse(raw);
+    return { ...defaultState(), ...saved, screen: 'title' };  // always return to title on reload
+  } catch (e) {
+    return defaultState();
+  }
+}
+
+function save() {
+  try {
+    const persist = {
+      lives: state.lives, score: state.score, bestStreak: state.bestStreak,
+      totalXp: state.totalXp, progress: state.progress,
+      bossUnlocked: state.bossUnlocked, bossDone: state.bossDone,
+    };
+    localStorage.setItem(SAVE_KEY, JSON.stringify(persist));
+  } catch (e) {}
+}
+
+function resetAll() {
+  if (!confirm('Wipe all progress and start over? This cannot be undone.')) return;
+  localStorage.removeItem(SAVE_KEY);
+  state = defaultState();
+  render();
+}
+
+// ============================================================
+// AUDIO (Web Audio API beeps)
+// ============================================================
+let audioCtx = null;
+function beep(freq, dur, type = 'square', vol = 0.04) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type;
+    o.frequency.value = freq;
+    g.gain.value = vol;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start();
+    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+    o.stop(audioCtx.currentTime + dur);
+  } catch (e) {}
+}
+const sfx = {
+  click: () => beep(800, 0.05),
+  correct: () => { beep(660, 0.1); setTimeout(() => beep(990, 0.15), 80); },
+  wrong: () => { beep(180, 0.2, 'sawtooth', 0.06); },
+  unlock: () => { beep(440, 0.08); setTimeout(() => beep(660, 0.08), 70); setTimeout(() => beep(880, 0.15), 140); },
+  boss: () => { beep(110, 0.4, 'sawtooth', 0.08); }
+};
+
+// ============================================================
+// RENDER
+// ============================================================
+const app = document.getElementById('app');
+
+function render() {
+  switch (state.screen) {
+    case 'title': renderTitle(); break;
+    case 'map': renderMap(); break;
+    case 'room': renderRoom(); break;
+    case 'result': renderResult(); break;
+    case 'boss-intro': renderBossIntro(); break;
+    case 'boss-result': renderBossResult(); break;
+  }
+}
+
+function renderTitle() {
+  const completed = Object.values(state.progress).filter(p => p.completed).length;
+  const total = ROOMS.length;
+  const continueDisabled = completed === 0 && state.totalXp === 0;
+  app.innerHTML = `
+    <div class="title-screen">
+      <div class="subtitle">POLITECNICO · MILANO · ZENNARO · AY 2024/25</div>
+      <div class="title">PETROCHEM</div>
+      <div class="subtitle">CHALLENGE · INDUSTRIAL ORGANIC CHEMISTRY</div>
+      <div class="tagline">14 plants. Methanol to VCM. Catalysts, syngas, the whole value chain.</div>
+      <div class="boot-log" id="bootLog"></div>
+      <div class="mt-lg">
+        <button class="btn" onclick="goMap()">${continueDisabled ? 'INITIATE' : 'CONTINUE'}</button>
+        ${continueDisabled ? '' : '<button class="btn danger" onclick="resetAll()">RESET</button>'}
+      </div>
+    </div>
+  `;
+  typeBoot([
+    '> petrochem.boot --target=plant_walkthrough',
+    '> loading process map ........... <span class="ok">OK</span>',
+    `> plants detected: <span class="ok">${total}</span> · operational: <span class="ok">${completed}</span>`,
+    `> total XP: <span class="ok">${state.totalXp}</span> · best streak: <span class="warn">${state.bestStreak}</span>`,
+    '> reference: Zennaro lectures + Polynt seminar',
+    '> catalyst beds <span class="ok">FRESH</span>. begin shift.'
+  ]);
+}
+
+function typeBoot(lines) {
+  const el = document.getElementById('bootLog');
+  if (!el) return;
+  let i = 0;
+  function nextLine() {
+    if (i >= lines.length) return;
+    const d = document.createElement('div');
+    d.className = 'line';
+    d.innerHTML = lines[i];
+    el.appendChild(d);
+    i++;
+    setTimeout(nextLine, 180);
+  }
+  nextLine();
+}
+
+function renderHUD() {
+  const livesHtml = Array.from({ length: 3 }, (_, i) =>
+    `<span class="life ${i >= state.lives ? 'lost' : ''}">●</span>`
+  ).join('');
+  const streakClass = state.streak >= 8 ? 'fire' : state.streak >= 4 ? 'hot' : '';
+  return `
+    <div class="hud">
+      <div class="hud-item">
+        <span class="hud-label">LIVES</span>
+        <div class="lives">${livesHtml}</div>
+      </div>
+      <div class="hud-item streak ${streakClass}">
+        <span class="hud-label">STREAK</span>
+        <span class="hud-value">×${state.streak}</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">XP</span>
+        <span class="hud-value">${state.totalXp}</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">BEST</span>
+        <span class="hud-value">${state.bestStreak}</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderMap() {
+  let html = renderHUD();
+  html += `
+    <div class="map-header">
+      <div class="map-title">// PETROCHEMICAL PLANT MAP</div>
+      <div class="map-sub">Clear plants in order. 4/5 correct unlocks the next process. 5/5 = 3 stars. Zennaro AY24/25.</div>
+    </div>
+    <div class="room-grid">
+  `;
+  let prevCompleted = true;
+  for (let i = 0; i < ROOMS.length; i++) {
+    const r = ROOMS[i];
+    const p = state.progress[r.id] || { stars: 0, mastery: 0, completed: false };
+    const unlocked = prevCompleted || p.completed;
+    const cls = p.completed ? 'completed' : (unlocked ? 'unlocked' : 'locked');
+    const stars = p.stars > 0 ? '★'.repeat(p.stars) + '☆'.repeat(3 - p.stars) : '';
+    const mastery = p.completed ? `${p.mastery}%` : '';
+    html += `
+      <div class="room-card ${cls}" ${unlocked ? `onclick="startRoom('${r.id}')"` : ''}>
+        <div>
+          <div class="room-id">ROOM ${i + 1} · ${r.id}</div>
+          <div class="room-name">${r.name}</div>
+          <div class="room-date">${r.date}/2026</div>
+        </div>
+        <div class="room-footer">
+          ${unlocked ? `<span class="stars">${stars}</span><span class="mastery">${mastery}</span>` : '<span class="lock-icon">🔒 LOCKED</span>'}
+        </div>
+      </div>
+    `;
+    prevCompleted = p.completed;
+  }
+
+  // Boss
+  const allDone = ROOMS.every(r => state.progress[r.id]?.completed);
+  const bossCls = state.bossDone ? 'completed boss' : (allDone ? 'unlocked boss' : 'locked boss');
+  html += `
+    <div class="room-card ${bossCls}" ${allDone ? 'onclick="startBoss()"' : ''}>
+      <div>
+        <div class="room-id" style="color: var(--danger);">★ FINAL ROUND</div>
+        <div class="room-name">EXAM SIMULATION — Mixed Topics · No Hints · Timer</div>
+        <div class="room-date">All lectures · Stephanopoulos boss fight</div>
+      </div>
+      <div class="room-footer">
+        ${allDone ? (state.bossDone ? `<span class="stars">★★★</span><span style="color:var(--danger)">CLEARED</span>` : '<span style="color: var(--danger);">▶ ENTER</span>') : '<span class="lock-icon">🔒 CLEAR ALL ROOMS</span>'}
+      </div>
+    </div>
+  `;
+
+  html += '</div>';
+  app.innerHTML = html;
+}
+
+function renderRoom() {
+  const room = ROOMS.find(r => r.id === state.currentRoomId);
+  if (!room) { state.screen = 'map'; render(); return; }
+  const q = room.questions[state.currentQIdx];
+  let html = renderHUD();
+  html += `
+    <div class="question-header">
+      <div class="breadcrumb">// <span class="accent">${room.id}</span> · ${room.name}</div>
+      <div class="q-progress">Q ${state.currentQIdx + 1} / ${room.questions.length}</div>
+    </div>
+    <div class="question-card">
+      <div class="q-type-badge">${q.type.toUpperCase()}</div>
+      <div class="q-prompt">${q.prompt}</div>
+      ${renderQuestionBody(q)}
+      ${state.answered ? renderFeedback(q) : ''}
+      <div class="q-actions">
+        ${state.answered
+          ? `<button class="btn" onclick="nextQuestion()">${state.currentQIdx + 1 >= room.questions.length ? 'FINISH ROOM' : 'NEXT →'}</button>`
+          : `<button class="btn" id="submitBtn" onclick="submitAnswer()" ${state.currentAnswer === null ? 'disabled' : ''}>SUBMIT</button>`}
+        <button class="btn secondary" onclick="abandonRoom()">EXIT</button>
+      </div>
+    </div>
+  `;
+  app.innerHTML = html;
+}
+
+function renderQuestionBody(q) {
+  const locked = state.answered ? 'style="pointer-events: none;"' : '';
+  if (q.type === 'mcq' || q.type === 'error') {
+    const options = q.type === 'mcq' ? q.options : q.statements;
+    return `<div class="options" ${locked}>` + options.map((opt, i) => {
+      let cls = '';
+      if (state.currentAnswer === i) cls = 'selected';
+      if (state.answered) {
+        const correctIdx = q.type === 'mcq' ? q.correct : q.wrongIndex;
+        if (i === correctIdx) cls = 'correct';
+        else if (i === state.currentAnswer) cls = 'wrong';
+      }
+      const letter = String.fromCharCode(65 + i);
+      return `<div class="option ${cls}" onclick="pickOption(${i})"><span class="option-letter">${letter}</span><span>${opt}</span></div>`;
+    }).join('') + '</div>';
+  }
+  if (q.type === 'numeric') {
+    return `
+      <div class="numeric-wrap">
+        <input type="number" class="numeric-input" id="numInput" step="any"
+               value="${state.currentAnswer ?? ''}"
+               oninput="state.currentAnswer = this.value === '' ? null : parseFloat(this.value); document.getElementById('submitBtn').disabled = state.currentAnswer === null;"
+               onkeydown="if(event.key==='Enter' && !state.answered && state.currentAnswer !== null) submitAnswer();"
+               ${state.answered ? 'disabled' : 'autofocus'}>
+        <span class="numeric-units">${q.units || ''}</span>
+      </div>
+    `;
+  }
+  if (q.type === 'match') {
+    // currentAnswer holds: { pairs: { leftIdx: rightIdx }, picking: leftIdx | null }
+    if (!state.currentAnswer || typeof state.currentAnswer !== 'object') {
+      state.currentAnswer = { pairs: {}, picking: null };
+    }
+    const ans = state.currentAnswer;
+    const rightShuffled = q._shuffledRight || (q._shuffledRight = shuffle(q.pairs.map((p, i) => ({ text: p.right, originalIdx: i }))));
+    let html = '<div class="match-grid">';
+    // Left column
+    html += '<div><div class="match-col-label">TERMS</div>';
+    q.pairs.forEach((p, i) => {
+      const paired = ans.pairs[i] !== undefined;
+      const selected = ans.picking === i;
+      const pairTag = paired ? `<span class="match-pair-tag">[${getPairLetter(ans.pairs[i], rightShuffled)}]</span>` : '';
+      let revealCls = '';
+      if (state.answered) {
+        revealCls = ans.pairs[i] === i ? 'correct' : 'wrong';
+        revealCls = revealCls === 'correct' ? 'paired' : 'wrong';
+      }
+      html += `<div class="match-item ${paired ? 'paired' : ''} ${selected ? 'selected' : ''} ${state.answered ? revealCls : ''}"
+                onclick="pickMatchLeft(${i})">${pairTag}${p.left}</div>`;
+    });
+    html += '</div>';
+    // Right column (shuffled)
+    html += '<div><div class="match-col-label">DEFINITIONS</div>';
+    rightShuffled.forEach((r, displayIdx) => {
+      const usedBy = Object.entries(ans.pairs).find(([l, rOrig]) => rOrig === r.originalIdx);
+      const paired = !!usedBy;
+      const letter = String.fromCharCode(65 + displayIdx);
+      html += `<div class="match-item ${paired ? 'paired' : ''}" onclick="pickMatchRight(${r.originalIdx})">
+                 <span class="match-pair-tag">[${letter}]</span>${r.text}
+               </div>`;
+    });
+    html += '</div></div>';
+    return html;
+  }
+  return '<div>Unsupported question type.</div>';
+}
+
+function getPairLetter(originalRightIdx, shuffledRight) {
+  const idx = shuffledRight.findIndex(r => r.originalIdx === originalRightIdx);
+  return String.fromCharCode(65 + idx);
+}
+
+function renderFeedback(q) {
+  const correct = state.lastCorrect;
+  return `
+    <div class="feedback ${correct ? 'correct' : 'wrong'}">
+      <div class="feedback-title">${correct ? '✓ CORRECT' : '✗ WRONG'}</div>
+      <div class="feedback-explain">${q.explain}</div>
+    </div>
+  `;
+}
+
+function renderResult() {
+  const room = ROOMS.find(r => r.id === state.currentRoomId);
+  const correct = state.roomResults.filter(r => r).length;
+  const total = state.roomResults.length;
+  const mastery = Math.round(100 * correct / total);
+  const stars = correct === total ? 3 : (correct >= 4 ? 2 : (correct >= 3 ? 1 : 0));
+  const pass = correct >= 4;
+
+  // Persist
+  if (pass) {
+    const existing = state.progress[room.id];
+    if (!existing || stars > existing.stars) {
+      state.progress[room.id] = { stars, mastery, completed: true };
+    } else {
+      state.progress[room.id].completed = true;
+    }
+    sfx.unlock();
+  } else {
+    sfx.wrong();
+  }
+  save();
+
+  app.innerHTML = `
+    ${renderHUD()}
+    <div class="result-screen">
+      <div class="result-headline ${pass ? '' : 'fail'}">${pass ? 'ROOM CLEARED' : 'ROOM FAILED'}</div>
+      <div class="result-room">${room.id} · ${room.name}</div>
+      <div class="result-stars">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</div>
+      <div class="result-stats">
+        <div class="result-stat">
+          <div class="result-stat-value">${correct}/${total}</div>
+          <div class="result-stat-label">CORRECT</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value">${mastery}%</div>
+          <div class="result-stat-label">MASTERY</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value">${state.streak}</div>
+          <div class="result-stat-label">CURRENT STREAK</div>
+        </div>
+      </div>
+      <div class="mt-lg">
+        <button class="btn" onclick="goMap()">RETURN TO MAP</button>
+        ${!pass ? `<button class="btn secondary" onclick="startRoom('${room.id}')">RETRY ROOM</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderBossIntro() {
+  sfx.boss();
+  app.innerHTML = `
+    ${renderHUD()}
+    <div class="result-screen boss-mode">
+      <div class="result-headline fail">★ FINAL ROUND ★</div>
+      <div class="result-room">EXAM SIMULATION · 15 questions · 12 minutes · No retry within run</div>
+      <div style="max-width: 600px; margin: 30px auto; line-height: 1.7; font-family: ui-sans-serif, system-ui, sans-serif; color: var(--muted);">
+        Mixed topics. Time pressure. 3 lives. <span style="color: var(--accent);">Get 12/15 to clear.</span>
+        Each correct answer worth 100 XP × streak multiplier. Boss XP awarded only on clear.
+      </div>
+      <div class="mt-lg">
+        <button class="btn danger" onclick="actuallyStartBoss()">▶ BEGIN</button>
+        <button class="btn secondary" onclick="goMap()">NOT YET</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderBossResult() {
+  const correct = state.roomResults.filter(r => r).length;
+  const total = state.roomResults.length;
+  const pass = correct >= 12;
+  if (pass) {
+    state.bossDone = true;
+    state.totalXp += 1000;
+    save();
+    sfx.unlock();
+  } else {
+    sfx.wrong();
+  }
+  app.innerHTML = `
+    ${renderHUD()}
+    <div class="result-screen boss-mode">
+      <div class="result-headline ${pass ? '' : 'fail'}">${pass ? '★ BOSS DEFEATED ★' : 'BOSS WON'}</div>
+      <div class="result-room">${correct}/${total} correct · ${Math.round(100*correct/total)}% mastery</div>
+      ${pass ? '<div style="color: var(--accent); margin: 30px 0; font-size: 18px;">+1000 BONUS XP · You are exam-ready.</div>' : '<div style="color: var(--muted); margin: 30px 0;">Return to the map, polish weak rooms, try again.</div>'}
+      <div class="mt-lg">
+        <button class="btn" onclick="goMap()">RETURN TO MAP</button>
+        ${!pass ? `<button class="btn danger" onclick="actuallyStartBoss()">RETRY BOSS</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// EVENT HANDLERS
+// ============================================================
+function goMap() {
+  sfx.click();
+  state.screen = 'map';
+  state.currentRoomId = null;
+  state.currentQIdx = 0;
+  state.currentAnswer = null;
+  state.answered = false;
+  state.roomResults = [];
+  state.lives = 3;  // refill lives between rooms
+  render();
+}
+
+function startRoom(id) {
+  sfx.click();
+  state.screen = 'room';
+  state.currentRoomId = id;
+  state.currentQIdx = 0;
+  state.currentAnswer = null;
+  state.answered = false;
+  state.roomResults = [];
+  state.lives = 3;
+  state.streak = 0;
+  // shuffle each room's MCQ option order? No — keep stable for muscle memory.
+  // Reset any shuffled match arrays so they re-shuffle on retry:
+  ROOMS.find(r => r.id === id).questions.forEach(q => { if (q.type === 'match') delete q._shuffledRight; });
+  render();
+}
+
+function pickOption(i) {
+  if (state.answered) return;
+  sfx.click();
+  state.currentAnswer = i;
+  render();
+}
+
+function pickMatchLeft(leftIdx) {
+  if (state.answered) return;
+  const ans = state.currentAnswer;
+  if (ans.pairs[leftIdx] !== undefined) {
+    // already paired — unpair
+    delete ans.pairs[leftIdx];
+    ans.picking = null;
+  } else {
+    ans.picking = leftIdx;
+  }
+  sfx.click();
+  render();
+  maybeFinalizeMatch();
+}
+
+function pickMatchRight(rightIdx) {
+  if (state.answered) return;
+  const ans = state.currentAnswer;
+  // if this right is already paired, do nothing
+  if (Object.values(ans.pairs).includes(rightIdx)) return;
+  if (ans.picking === null) return;
+  ans.pairs[ans.picking] = rightIdx;
+  ans.picking = null;
+  sfx.click();
+  render();
+  maybeFinalizeMatch();
+}
+
+function maybeFinalizeMatch() {
+  const q = ROOMS.find(r => r.id === state.currentRoomId)?.questions[state.currentQIdx]
+            || BOSS_POOL?.[state.currentQIdx];
+  if (!q || q.type !== 'match') return;
+  const ans = state.currentAnswer;
+  const pairCount = Object.keys(ans.pairs).length;
+  document.getElementById('submitBtn').disabled = pairCount !== q.pairs.length;
+}
+
+function submitAnswer() {
+  const room = state.bossActive
+    ? { questions: BOSS_POOL, id: 'BOSS' }
+    : ROOMS.find(r => r.id === state.currentRoomId);
+  const q = room.questions[state.currentQIdx];
+  let correct = false;
+  if (q.type === 'mcq') correct = state.currentAnswer === q.correct;
+  else if (q.type === 'error') correct = state.currentAnswer === q.wrongIndex;
+  else if (q.type === 'numeric') {
+    const ans = parseFloat(state.currentAnswer);
+    correct = !isNaN(ans) && Math.abs(ans - q.answer) <= (q.tolerance ?? 0.01);
+  } else if (q.type === 'match') {
+    correct = q.pairs.every((_, i) => state.currentAnswer.pairs[i] === i);
+  }
+
+  state.answered = true;
+  state.lastCorrect = correct;
+  state.roomResults.push(correct);
+
+  if (correct) {
+    state.streak++;
+    if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+    const mult = Math.min(5, 1 + Math.floor(state.streak / 3));
+    const gain = (state.bossActive ? 100 : 50) * mult;
+    state.totalXp += gain;
+    sfx.correct();
+  } else {
+    state.streak = 0;
+    state.lives--;
+    sfx.wrong();
+  }
+  save();
+  render();
+
+  // If out of lives mid-room, end the room
+  if (state.lives <= 0 && !state.bossActive) {
+    setTimeout(() => endRoom(), 1400);
+  } else if (state.lives <= 0 && state.bossActive) {
+    setTimeout(() => endBoss(), 1400);
+  }
+}
+
+function nextQuestion() {
+  const room = state.bossActive ? { questions: BOSS_POOL } : ROOMS.find(r => r.id === state.currentRoomId);
+  state.currentQIdx++;
+  state.currentAnswer = null;
+  state.answered = false;
+  if (state.currentQIdx >= room.questions.length) {
+    if (state.bossActive) endBoss();
+    else endRoom();
+    return;
+  }
+  // Reset match answer if next is match
+  const nextQ = room.questions[state.currentQIdx];
+  if (nextQ.type === 'match') state.currentAnswer = { pairs: {}, picking: null };
+  render();
+}
+
+function endRoom() {
+  state.screen = 'result';
+  render();
+}
+
+function abandonRoom() {
+  if (!confirm('Leave this room? Progress within the room is lost.')) return;
+  goMap();
+}
+
+// ============================================================
+// BOSS
+// ============================================================
+let BOSS_POOL = [];
+function startBoss() {
+  sfx.click();
+  state.screen = 'boss-intro';
+  render();
+}
+
+function actuallyStartBoss() {
+  sfx.boss();
+  // Build pool: 10 random from rooms + 5 exclusive
+  const allRoomQs = ROOMS.flatMap(r => r.questions);
+  BOSS_POOL = [...shuffle(allRoomQs).slice(0, 10), ...BOSS_EXCLUSIVE].sort(() => Math.random() - 0.5);
+  // Clear any prior match shuffles
+  BOSS_POOL.forEach(q => { if (q.type === 'match') delete q._shuffledRight; });
+  state.bossActive = true;
+  state.screen = 'room';
+  state.currentRoomId = '★ BOSS ROUND ★';
+  state.currentQIdx = 0;
+  state.currentAnswer = BOSS_POOL[0].type === 'match' ? { pairs: {}, picking: null } : null;
+  state.answered = false;
+  state.roomResults = [];
+  state.lives = 3;
+  state.streak = 0;
+  // Patch the room lookup: render uses currentRoomId, so we wrap
+  render();
+}
+
+function endBoss() {
+  state.bossActive = false;
+  state.screen = 'boss-result';
+  render();
+}
+
+// Patch render() for boss: when bossActive, treat currentRoom as BOSS_POOL
+const originalRenderRoom = renderRoom;
+renderRoom = function() {
+  if (!state.bossActive) return originalRenderRoom();
+  const q = BOSS_POOL[state.currentQIdx];
+  if (!q) { state.screen = 'boss-result'; render(); return; }
+  let html = renderHUD();
+  html += `
+    <div class="question-header">
+      <div class="breadcrumb">// <span class="accent" style="color: var(--danger);">★ BOSS ROUND</span> · EXAM SIMULATION</div>
+      <div class="q-progress">Q ${state.currentQIdx + 1} / ${BOSS_POOL.length}</div>
+    </div>
+    <div class="question-card boss-mode">
+      <div class="q-type-badge" style="border-color: var(--danger); color: var(--danger);">${q.type.toUpperCase()}</div>
+      <div class="q-prompt">${q.prompt}</div>
+      ${renderQuestionBody(q)}
+      ${state.answered ? renderFeedback(q) : ''}
+      <div class="q-actions">
+        ${state.answered
+          ? `<button class="btn danger" onclick="nextQuestion()">${state.currentQIdx + 1 >= BOSS_POOL.length ? 'FINALIZE' : 'NEXT →'}</button>`
+          : `<button class="btn danger" id="submitBtn" onclick="submitAnswer()" ${state.currentAnswer === null || (typeof state.currentAnswer === 'object' && Object.keys(state.currentAnswer.pairs || {}).length !== (q.pairs?.length || 0)) ? 'disabled' : ''}>SUBMIT</button>`}
+        <button class="btn secondary" onclick="abandonBoss()">ABANDON</button>
+      </div>
+    </div>
+  `;
+  app.innerHTML = html;
+};
+
+function abandonBoss() {
+  if (!confirm('Abandon the boss round? You will need to clear all rooms again to retry.')) return;
+  state.bossActive = false;
+  goMap();
+}
+
+// ============================================================
+// UTIL
+// ============================================================
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+render();
+</script>
+</body>
+</html>
